@@ -177,6 +177,52 @@ class PostController extends Controller {
       response.body = { code: error.code, error: error.message, data: error.errors };
     }
   }
+
+  async increaseShareCount() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+
+    // Validate parameters
+    const rule = {
+      _id: {
+        type: 'object_id',
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { _id } = body;
+      const res = await service.post.increaseValue({ _id }, { field: 'share_count', value: 1 });
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
+  async increaseViewCount() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+
+    // Validate parameters
+    const rule = {
+      _id: {
+        type: 'object_id',
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { _id } = body;
+      const res = await service.post.increaseValue({ _id }, { field: 'view_count', value: 1 });
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
 }
 
 module.exports = PostController;

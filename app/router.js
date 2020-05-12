@@ -33,6 +33,8 @@ module.exports = (app) => {
   router.post('/post/modifyPost', authentication(), authorization(['normal']), controller.post.modifyPost);
   router.post('/post/removePost', authentication(), authorization(['normal']), controller.post.removePost);
   router.post('/post/modifyIsPublished', authentication(), authorization(['normal']), controller.post.modifyIsPublished);
+  router.post('/post/increaseShareCount', controller.post.increaseShareCount);
+  router.post('/post/increaseViewCount', controller.post.increaseViewCount);
 
   // The following APIs are for admin user
   router.post('/admin/user/addUser', controller.user.addUser);

@@ -64,6 +64,7 @@ class PostService extends Service {
       const data = await Post.find(filter, null, { limit, skip, sort }).lean();
       if (data.length > 0) {
         await service.user.tidyUpUsers(data);
+        // TODO: tidy up tags
       }
       logger.info('Find posts successfully');
       return { total, data };
@@ -120,11 +121,26 @@ class PostService extends Service {
       if (is_published) params.published_at = Date.now();
 
       const res = await Post.updateOne(filter, params).lean();
-      logger.info('Update post isPublished successfully');
+      logger.info('Update post is_published successfully');
       return res.n > 0 ? { success: true } : {};
     } catch (error) {
       logger.error(error);
-      throw new ErrorRes(1002, 'Failed to update post isPublished to database', error);
+      throw new ErrorRes(1002, 'Failed to update post is_published to database', error);
+    }
+  }
+
+  async increaseValue(filter, { field, value }) {
+    const { ctx, logger } = this;
+    const { model } = ctx;
+    const { Post } = model;
+
+    try {
+      const res = await Post.updateOne(filter, { $inc: { [field]: value } }).lean();
+      logger.info(`Update post ${field} successfully`);
+      return res.n > 0 ? { success: true } : {};
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1002, `Failed to update post ${field} to database`, error);
     }
   }
 }
