@@ -67,6 +67,28 @@ class PostService extends Service {
       throw new ErrorRes(1001, 'Failed to find posts in database', error);
     }
   }
+
+  async updateOne(filter, params) {
+    const { ctx, service, logger } = this;
+    const { model } = ctx;
+    const { Post } = model;
+
+    try {
+      const filteredParams = service.utils.filterData({
+        data: params,
+        model: Post,
+        include: ['tag_id', 'title', 'subtitle', 'content', 'images', 'cover'],
+      });
+      filteredParams.updated_at = Date.now();
+
+      const res = await Post.updateOne(filter, filteredParams).lean();
+      logger.info('Update post successfully');
+      return res.n > 0 ? { success: true } : {};
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1002, 'Failed to update post to database', error);
+    }
+  }
 }
 
 module.exports = PostService;
