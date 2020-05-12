@@ -150,6 +150,21 @@ class UserController extends Controller {
     }
   }
 
+  async removeUser() {
+    const { ctx, service } = this;
+    const { response } = ctx;
+    const { user } = ctx.state;
+
+    try {
+      const { _id } = user;
+      const res = await service.user.deleteOne({ _id });
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
   async _removeUser() {
     const { ctx, service } = this;
     const { request, response } = ctx;
