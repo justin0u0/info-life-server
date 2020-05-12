@@ -20,6 +20,9 @@ module.exports = (app) => {
   // Sessions
   router.post('/session/login', controller.session.login);
 
+  // Posts
+  router.post('/post/addPost', authentication, controller.post.addPost);
+
   // The following APIs are for admin user
   router.post('/admin/user/addUser', controller.user.addUser);
   router.post('/admin/user/getUser', controller.user._getUser);
