@@ -40,6 +40,21 @@ class UserController extends Controller {
 
   async getUser() {
     const { ctx, service } = this;
+    const { response } = ctx;
+    const { user } = ctx.state;
+
+    try {
+      const { _id } = user;
+      const res = await service.user.findOne({ _id });
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
+  async _getUser() {
+    const { ctx, service } = this;
     const { request, response } = ctx;
     const { body } = request;
 
@@ -61,7 +76,7 @@ class UserController extends Controller {
     }
   }
 
-  async getUsers() {
+  async _getUsers() {
     const { ctx, service } = this;
     const { request, response } = ctx;
     const { body } = request;
@@ -101,6 +116,22 @@ class UserController extends Controller {
     const { ctx, service } = this;
     const { request, response } = ctx;
     const { body } = request;
+    const { user } = ctx.state;
+
+    try {
+      const { _id } = user;
+      const res = await service.user.updateOne({ _id }, body);
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
+  async _modifyUser() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
 
     const rule = {
       _id: {
@@ -119,7 +150,7 @@ class UserController extends Controller {
     }
   }
 
-  async removeUser() {
+  async _removeUser() {
     const { ctx, service } = this;
     const { request, response } = ctx;
     const { body } = request;

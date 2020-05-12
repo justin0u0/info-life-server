@@ -5,12 +5,16 @@ const ErrorRes = require('../lib/errorRes');
 
 class UserService extends Service {
   async create(params) {
-    const { ctx, logger } = this;
+    const { ctx, service, logger } = this;
     const { model } = ctx;
     const { User } = model;
 
     try {
-      const res = await User.create(params);
+      const filteredParams = service.utils.filterData({ data: params, model: User });
+      filteredParams.password = await ctx.genHash(params.password);
+      filteredParams.role = 'normal';
+
+      const res = await User.create(filteredParams);
       logger.info('Create user successfully');
       return res;
     } catch (error) {
@@ -51,12 +55,14 @@ class UserService extends Service {
   }
 
   async updateOne(filter, params) {
-    const { ctx, logger } = this;
+    const { ctx, service, logger } = this;
     const { model } = ctx;
     const { User } = model;
 
     try {
-      const res = await User.updateOne(filter, params).lean();
+      const filteredParams = service.utils.filterData({ data: params, model: User, exclude: ['password', 'role'] });
+
+      const res = await User.updateOne(filter, filteredParams).lean();
       logger.info('Update user successfully');
       return res.n > 0 ? { success: true } : {};
     } catch (error) {

@@ -51,6 +51,14 @@ module.exports = (app) => {
       type: String,
       required: true,
     },
+    role: {
+      type: String,
+      required: true,
+      validate: {
+        validator: (v) => ['normal', 'admin'].includes(v),
+        message: (role) => `${role} is not a valid role`,
+      },
+    },
     name: {
       type: String,
       required: true,

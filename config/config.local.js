@@ -42,6 +42,7 @@ module.exports = (appInfo) => {
         keepAlive: true,
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        useCreateIndex: true,
       },
     },
   };
@@ -56,6 +57,11 @@ module.exports = (appInfo) => {
     origin: '*',
     allowHeaders: 'Content-Type, Assecc-Control-Allow-Origin, Authorization',
     allowMethods: 'GET, HEAD, PUT, POST, DELETE',
+  };
+
+  // bcrypt
+  config.bcrypt = {
+    saltRounds: 10,
   };
 
   return {

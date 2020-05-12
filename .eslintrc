@@ -1,6 +1,7 @@
 {
   "extends": "eslint-config-egg",
   "rules": {
-    "arrow-parens": ["error", "always"]
+    "arrow-parens": ["error", "always"],
+    "array-bracket-spacing": ["error", "never"]
   }
 }
