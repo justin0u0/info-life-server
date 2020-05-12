@@ -32,6 +32,7 @@ module.exports = (app) => {
   router.post('/post/getPosts', controller.post.getPosts);
   router.post('/post/modifyPost', authentication(), authorization(['normal']), controller.post.modifyPost);
   router.post('/post/removePost', authentication(), authorization(['normal']), controller.post.removePost);
+  router.post('/post/getPostsByCurrentUser', authentication(), authorization(['normal']), controller.post.getPostsByCurrentUser);
   router.post('/post/modifyIsPublished', authentication(), authorization(['normal']), controller.post.modifyIsPublished);
   router.post('/post/increaseShareCount', controller.post.increaseShareCount);
   router.post('/post/increaseViewCount', controller.post.increaseViewCount);
