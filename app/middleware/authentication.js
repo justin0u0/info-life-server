@@ -5,6 +5,7 @@ module.exports = (app, strict) => {
     const { jwt } = app;
     const { request, response } = ctx;
     const auth = request.headers.authorization;
+
     if (auth && auth.startsWith('Bearer ')) {
       try {
         const token = auth.slice(7);
@@ -25,6 +26,7 @@ module.exports = (app, strict) => {
         response.status = 401;
         response.body = { code: 2001, error: 'Authentication failed' };
       } else {
+        // Set default empty object
         ctx.state.user = {};
         await next();
       }

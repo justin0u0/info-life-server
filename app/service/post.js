@@ -14,11 +14,12 @@ class PostService extends Service {
       const filteredParams = service.utils.filterData({
         data: params,
         model: Post,
-        exclude: ['created_at', 'updated_at', 'published_at', 'share_count', 'view_count'],
+        exclude: ['is_published', 'created_at', 'updated_at', 'published_at', 'share_count', 'view_count'],
       });
       filteredParams.created_at = Date.now();
       filteredParams.share_count = 0;
       filteredParams.view_count = 0;
+      filteredParams.is_published = false;
 
       // Insure user exist
       const user = await User.findOne({ _id: params.user_id }).lean();
@@ -41,8 +42,10 @@ class PostService extends Service {
 
     try {
       const post = await Post.findOne(filter).lean();
-      await service.user.tidyUpUser(post);
-      // TODO: tody up tag
+      if (post) {
+        await service.user.tidyUpUser(post);
+        // TODO: tody up tag
+      }
       logger.info('Find post successfully');
       return post;
     } catch (error) {
@@ -59,7 +62,9 @@ class PostService extends Service {
     try {
       const total = await Post.countDocuments(filter).lean();
       const data = await Post.find(filter, null, { limit, skip, sort }).lean();
-      await service.user.tidyUpUsers(data);
+      if (data.length > 0) {
+        await service.user.tidyUpUsers(data);
+      }
       logger.info('Find posts successfully');
       return { total, data };
     } catch (error) {
@@ -102,6 +107,24 @@ class PostService extends Service {
     } catch (error) {
       logger.error(error);
       throw new ErrorRes(1003, 'Failed to delete post to database', error);
+    }
+  }
+
+  async updateIsPublished(filter, is_published) {
+    const { ctx, logger } = this;
+    const { model } = ctx;
+    const { Post } = model;
+
+    try {
+      const params = { is_published };
+      if (is_published) params.published_at = Date.now();
+
+      const res = await Post.updateOne(filter, params).lean();
+      logger.info('Update post isPublished successfully');
+      return res.n > 0 ? { success: true } : {};
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1002, 'Failed to update post isPublished to database', error);
     }
   }
 }

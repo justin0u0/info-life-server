@@ -44,6 +44,7 @@ class PostController extends Controller {
     const { ctx, service } = this;
     const { request, response } = ctx;
     const { body } = request;
+    const { _id: user_id = null } = ctx.state.user;
 
     // Validate Parameters
     const rule = {
@@ -55,7 +56,8 @@ class PostController extends Controller {
     try {
       ctx.validate(rule, body);
       const { _id } = body;
-      const res = await service.post.findOne({ _id });
+      // Normal user should get published post, but author can get not published post
+      const res = await service.post.findOne({ _id, $or: [{ is_published: true }, { is_published: false, user_id }] }, user_id);
       response.body = res;
     } catch (error) {
       response.status = error.status;
@@ -91,6 +93,8 @@ class PostController extends Controller {
     try {
       ctx.validate(rule, body);
       const { filter = {}, limit = 10, skip = 0, sort = {} } = body;
+      // Should only get published posts
+      filter.is_published = true;
       const res = await service.post.findAll({ filter, limit, skip, sort });
       response.body = res;
     } catch (error) {
@@ -140,6 +144,33 @@ class PostController extends Controller {
       ctx.validate(rule, body);
       const { _id } = body;
       const res = await service.post.deleteOne({ _id, user_id });
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
+  async modifyIsPublished() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+    const { _id: user_id } = ctx.state.user;
+
+    // Validate parameters
+    const rule = {
+      _id: {
+        type: 'object_id',
+      },
+      is_published: {
+        type: 'boolean',
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { _id, is_published } = body;
+      const res = await service.post.updateIsPublished({ _id, user_id }, is_published);
       response.body = res;
     } catch (error) {
       response.status = error.status;

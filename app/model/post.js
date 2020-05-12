@@ -45,6 +45,10 @@ module.exports = (app) => {
     cover: {
       type: fileSchema,
     },
+    is_published: {
+      type: Boolean,
+      required: true,
+    },
     created_at: {
       type: Number,
       required: true,
@@ -68,7 +72,7 @@ module.exports = (app) => {
   });
 
   postSchema.index({ user_id: 1 });
-  postSchema.index({ tag_id: 1 });
+  postSchema.index({ is_published: 1, tag_id: 1 });
 
   return mongoose.model('Post', postSchema);
 };
