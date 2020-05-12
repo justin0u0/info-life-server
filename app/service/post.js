@@ -33,6 +33,40 @@ class PostService extends Service {
       throw new ErrorRes(1000, 'Failed to create post to database', error);
     }
   }
+
+  async findOne(filter) {
+    const { ctx, service, logger } = this;
+    const { model } = ctx;
+    const { Post } = model;
+
+    try {
+      const post = await Post.findOne(filter).lean();
+      await service.user.tidyUpUser(post);
+      // TODO: tody up tag
+      logger.info('Find post successfully');
+      return post;
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1001, 'Failed to find post in database', error);
+    }
+  }
+
+  async findAll({ filter, limit, skip, sort }) {
+    const { ctx, service, logger } = this;
+    const { model } = ctx;
+    const { Post } = model;
+
+    try {
+      const total = await Post.countDocuments(filter).lean();
+      const data = await Post.find(filter, null, { limit, skip, sort }).lean();
+      await service.user.tidyUpUsers(data);
+      logger.info('Find posts successfully');
+      return { total, data };
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1001, 'Failed to find posts in database', error);
+    }
+  }
 }
 
 module.exports = PostService;
