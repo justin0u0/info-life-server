@@ -89,6 +89,21 @@ class PostService extends Service {
       throw new ErrorRes(1002, 'Failed to update post to database', error);
     }
   }
+
+  async deleteOne(filter) {
+    const { ctx, logger } = this;
+    const { model } = ctx;
+    const { Post } = model;
+
+    try {
+      const res = await Post.deleteOne(filter).lean();
+      logger.info('Delete post successfully');
+      return res.n > 0 ? { success: true } : {};
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1003, 'Failed to delete post to database', error);
+    }
+  }
 }
 
 module.exports = PostService;
