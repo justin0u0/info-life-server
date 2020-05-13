@@ -37,10 +37,29 @@ module.exports = (app) => {
   router.post('/post/increaseShareCount', controller.post.increaseShareCount);
   router.post('/post/increaseViewCount', controller.post.increaseViewCount);
 
+  // Tags
+  router.post('/tag/getTags', controller.tag.getTags);
+
   // The following APIs are for admin user
+  // Users
   router.post('/admin/user/addUser', controller.user.addUser);
   router.post('/admin/user/getUser', controller.user._getUser);
   router.post('/admin/user/getUsers', controller.user._getUsers);
   router.post('/admin/user/modifyUser', controller.user._modifyUser);
   router.post('/admin/user/removeUser', controller.user._removeUser);
+
+  // Posts
+  router.post('/admin/post/addPost', controller.post._addPost);
+  router.post('/admin/post/getPost', controller.post._getPost);
+  router.post('/admin/post/getPosts', controller.post._getPosts);
+  router.post('/admin/post/modifyPost', controller.post._modifyPost);
+  router.post('/admin/post/removePost', controller.post._removePost);
+  router.post('/admin/post/modifyIsPublished', controller.post._modifyIsPublished);
+
+  // Tags
+  router.post('/admin/tag/addTag', controller.tag.addTag);
+  router.post('/admin/tag/getTag', controller.tag.getTag);
+  router.post('/admin/tag/getTags', controller.tag.getTags);
+  router.post('/admin/tag/modifyTag', controller.tag.modifyTag);
+  router.post('/admin/tag/removeTag', controller.tag.removeTag);
 };

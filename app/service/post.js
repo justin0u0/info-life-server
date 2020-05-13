@@ -7,7 +7,7 @@ class PostService extends Service {
   async create(params) {
     const { ctx, service, logger } = this;
     const { model } = ctx;
-    const { User, Post } = model;
+    const { User, Post, Tag } = model;
 
     try {
       // Filter parameters
@@ -21,10 +21,12 @@ class PostService extends Service {
       filteredParams.view_count = 0;
       filteredParams.is_published = false;
 
-      // Insure user exist
-      const user = await User.findOne({ _id: params.user_id }).lean();
+      // Insure user exists
+      const user = await User.exists({ _id: params.user_id });
       if (!user) throw 'Failed to find user in database';
-      // TODO: Insure tag exist
+      // Insure tag exists
+      const tag = await Tag.exists({ _id: params.tag_id });
+      if (!tag) throw 'Failed to find tag in database';
 
       const res = await Post.create(filteredParams);
       logger.info('Create post successfully');
@@ -44,7 +46,7 @@ class PostService extends Service {
       const post = await Post.findOne(filter).lean();
       if (post) {
         await service.user.tidyUpUser(post);
-        // TODO: tody up tag
+        await service.tag.tidyUpTag(post);
       }
       logger.info('Find post successfully');
       return post;
@@ -64,7 +66,7 @@ class PostService extends Service {
       const data = await Post.find(filter, null, { limit, skip, sort }).lean();
       if (data.length > 0) {
         await service.user.tidyUpUsers(data);
-        // TODO: tidy up tags
+        await service.tag.tidyUpTags(data);
       }
       logger.info('Find posts successfully');
       return { total, data };
@@ -74,12 +76,14 @@ class PostService extends Service {
     }
   }
 
-  async updateOne(filter, params) {
+  async updateOne(filter, params, isAdmin = false) {
     const { ctx, service, logger } = this;
     const { model } = ctx;
     const { Post } = model;
 
     try {
+      const include = ['tag_id', 'title', 'subtitle', 'content', 'images', 'cover'];
+      if (isAdmin) include.push(...['share_count', 'view_count']);
       const filteredParams = service.utils.filterData({
         data: params,
         model: Post,

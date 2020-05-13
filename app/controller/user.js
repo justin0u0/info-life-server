@@ -118,7 +118,27 @@ class UserController extends Controller {
     const { body } = request;
     const { user } = ctx.state;
 
+    const rule = {
+      name: {
+        type: 'string',
+        required: false,
+      },
+      email: {
+        type: 'string',
+        required: false,
+      },
+      avatar: {
+        type: 'file',
+        required: false,
+      },
+      profiles: {
+        type: 'object',
+        required: false,
+      },
+    };
+
     try {
+      ctx.validate(rule, body);
       const { _id } = user;
       const res = await service.user.updateOne({ _id }, body);
       response.body = res;
@@ -136,6 +156,22 @@ class UserController extends Controller {
     const rule = {
       _id: {
         type: 'object_id',
+      },
+      name: {
+        type: 'string',
+        required: false,
+      },
+      email: {
+        type: 'string',
+        required: false,
+      },
+      avatar: {
+        type: 'file',
+        required: false,
+      },
+      profiles: {
+        type: 'object',
+        required: false,
       },
     };
 

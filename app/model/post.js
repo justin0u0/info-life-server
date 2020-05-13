@@ -17,6 +17,9 @@ module.exports = (app) => {
       type: String,
       required: true,
     },
+  }, {
+    _id: false,
+    strict: 'throw',
   });
 
   const postSchema = new Schema({
