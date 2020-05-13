@@ -38,9 +38,12 @@ module.exports = (app) => {
   router.post('/post/increaseViewCount', controller.post.increaseViewCount);
 
   // The following APIs are for admin user
+  // Users
   router.post('/admin/user/addUser', controller.user.addUser);
   router.post('/admin/user/getUser', controller.user._getUser);
   router.post('/admin/user/getUsers', controller.user._getUsers);
   router.post('/admin/user/modifyUser', controller.user._modifyUser);
   router.post('/admin/user/removeUser', controller.user._removeUser);
+  // Tags
+  router.post('/admin/tag/addTag', controller.tag.addTag);
 };

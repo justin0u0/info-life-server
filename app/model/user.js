@@ -18,6 +18,9 @@ module.exports = (app) => {
       type: String,
       required: true,
     },
+  }, {
+    _id: false,
+    strict: 'throw',
   });
 
   const profileSchema = new Schema({
@@ -29,6 +32,9 @@ module.exports = (app) => {
       type: Boolean,
       required: true,
     },
+  }, {
+    _id: false,
+    strict: 'throw',
   });
 
   const profilesSchema = new Schema({
@@ -44,6 +50,9 @@ module.exports = (app) => {
     bitbucket: {
       type: profileSchema,
     },
+  }, {
+    _id: false,
+    strict: 'throw',
   });
 
   const userSchema = new Schema({
