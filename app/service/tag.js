@@ -83,6 +83,45 @@ class TagService extends Service {
       throw new ErrorRes(1003, 'Failed to delete tag to database');
     }
   }
+
+  // Utilities
+
+  async tidyUpTag(datum) {
+    const { ctx } = this;
+    const { model } = ctx;
+    const { Tag } = model;
+
+    const { tag_id = null } = datum;
+    if (!tag_id) {
+      datum.tag = null;
+    } else {
+      datum.tag = await Tag.findOne({ _id: tag_id }, { name: 1, color: 1 }).lean();
+    }
+    return datum;
+  }
+
+  async tidyUpTags(data) {
+    const { ctx } = this;
+    const { model } = ctx;
+    const { Tag } = model;
+
+    const tagArr = [];
+    for (const datum of data) {
+      if (datum.tag_id) {
+        tagArr.push(datum.tag_id);
+      }
+    }
+
+    const tags = await Tag.find({ _id: tagArr }, { name: 1, color: 1 }).lean();
+    const tagObj = {};
+    for (const tag of tags) tagObj[tag._id] = tag;
+    for (const datum of data) {
+      if (datum.tag_id) {
+        datum.tag = tagObj[datum.tag_id];
+      }
+    }
+    return data;
+  }
 }
 
 module.exports = TagService;
