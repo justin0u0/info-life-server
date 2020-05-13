@@ -39,6 +39,37 @@ class CommentService extends Service {
       throw new ErrorRes(1000, 'Failed to create comment to database', error);
     }
   }
+
+  async findOne(filter) {
+    const { ctx, logger } = this;
+    const { model } = ctx;
+    const { Comment } = model;
+
+    try {
+      const res = await Comment.findOne(filter).lean();
+      logger.info('Find comment successfully');
+      return res;
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1001, 'Failed to find comment in database', error);
+    }
+  }
+
+  async findAll({ filter, limit, skip, sort }) {
+    const { ctx, logger } = this;
+    const { model } = ctx;
+    const { Comment } = model;
+
+    try {
+      const total = await Comment.countDocuments(filter).lean();
+      const data = await Comment.find(filter, null, { limit, skip, sort }).lean();
+      logger.info('Find comments successfully');
+      return { total, data };
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1001, 'Failed to find comments in database', error);
+    }
+  }
 }
 
 module.exports = CommentService;

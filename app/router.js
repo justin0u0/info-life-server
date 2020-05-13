@@ -42,6 +42,8 @@ module.exports = (app) => {
 
   // Comments
   router.post('/comment/addComment', authentication(), authorization(['normal']), controller.comment.addComment);
+  router.post('/comment/getComment', controller.comment.getComment);
+  router.post('/comment/getComments', controller.comment.getComments);
 
   // The following APIs are for admin user
   // Users
