@@ -48,6 +48,11 @@ module.exports = (app) => {
   router.post('/admin/user/modifyUser', controller.user._modifyUser);
   router.post('/admin/user/removeUser', controller.user._removeUser);
 
+  // Posts
+  router.post('/admin/post/addPost', controller.post._addPost);
+  router.post('/admin/post/getPost', controller.post._getPost);
+  router.post('/admin/post/getPosts', controller.post._getPosts);
+
   // Tags
   router.post('/admin/tag/addTag', controller.tag.addTag);
   router.post('/admin/tag/getTag', controller.tag.getTag);

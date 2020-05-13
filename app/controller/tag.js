@@ -15,7 +15,7 @@ class TagController extends Controller {
         allowEmpty: false,
       },
       color: {
-        type: 'number',
+        type: 'integer',
         min: 0,
         max: (256 ** 3) - 1,
       },
@@ -65,11 +65,11 @@ class TagController extends Controller {
         required: false,
       },
       limit: {
-        type: 'number',
+        type: 'interger',
         required: false,
       },
       skip: {
-        type: 'number',
+        type: 'integer',
         required: false,
       },
       sort: {
@@ -100,7 +100,7 @@ class TagController extends Controller {
         type: 'object_id',
       },
       color: {
-        type: 'number',
+        type: 'integer',
         min: 0,
         max: (256 ** 3) - 1,
         required: false,

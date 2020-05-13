@@ -40,6 +40,44 @@ class PostController extends Controller {
     }
   }
 
+  async _addPost() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+    
+    // Validate Parameters
+    const rule = {
+      user_id: {
+        type: 'object_id',
+      },
+      tag_id: {
+        type: 'object_id',
+      },
+      title: {
+        type: 'string',
+      },
+      subtitle: {
+        type: 'string',
+      },
+      content: {
+        type: 'string',
+      },
+      cover: {
+        type: 'file',
+        required: false,
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const res = await service.post.create(body);
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
   async getPost() {
     const { ctx, service } = this;
     const { request, response } = ctx;
@@ -57,7 +95,30 @@ class PostController extends Controller {
       ctx.validate(rule, body);
       const { _id } = body;
       // Normal user should get published post, but author can get not published post
-      const res = await service.post.findOne({ _id, $or: [{ is_published: true }, { is_published: false, user_id }] }, user_id);
+      const res = await service.post.findOne({ _id, $or: [{ is_published: true }, { is_published: false, user_id }] });
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
+  async _getPost() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+
+    // Validate Parameters
+    const rule = {
+      _id: {
+        type: 'object_id',
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { _id } = body;
+      const res = await service.post.findOne({ _id });
       response.body = res;
     } catch (error) {
       response.status = error.status;
@@ -95,6 +156,42 @@ class PostController extends Controller {
       const { filter = {}, limit = 10, skip = 0, sort = {} } = body;
       // Should only get published posts
       filter.is_published = true;
+      const res = await service.post.findAll({ filter, limit, skip, sort });
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
+  async _getPosts() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+
+    // Validate parameters
+    const rule = {
+      filter: {
+        type: 'object',
+        required: false,
+      },
+      limit: {
+        type: 'integer',
+        required: false,
+      },
+      skip: {
+        type: 'integer',
+        required: false,
+      },
+      sort: {
+        type: 'object',
+        required: false,
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { filter = {}, limit = 10, skip = 0, sort = {} } = body;
       const res = await service.post.findAll({ filter, limit, skip, sort });
       response.body = res;
     } catch (error) {
