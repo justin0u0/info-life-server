@@ -60,7 +60,7 @@ class UserService extends Service {
     const { User } = model;
 
     try {
-      const filteredParams = service.utils.filterData({ data: params, model: User, exclude: ['password', 'role'] });
+      const filteredParams = service.utils.filterData({ data: params, model: User, exclude: ['username', 'password', 'role'] });
 
       const res = await User.updateOne(filter, filteredParams).lean();
       logger.info('Update user successfully');

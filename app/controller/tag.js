@@ -89,6 +89,56 @@ class TagController extends Controller {
       response.body = { code: error.code, error: error.message, data: error.errors };
     }
   }
+
+  async modifyTag() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+
+    const rule = {
+      _id: {
+        type: 'object_id',
+      },
+      color: {
+        type: 'number',
+        min: 0,
+        max: (256 ** 3) - 1,
+        required: false,
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { _id, ...params } = body;
+      const res = await service.tag.updateOne({ _id }, params);
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
+  async removeTag() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+
+    const rule = {
+      _id: {
+        type: 'object_id',
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { _id } = body;
+      const res = await service.tag.deleteOne({ _id });
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
 }
 
 module.exports = TagController;

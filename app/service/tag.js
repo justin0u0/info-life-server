@@ -49,6 +49,40 @@ class TagService extends Service {
       throw new ErrorRes(1001, 'Failed to find tags in database');
     }
   }
+
+  async updateOne(filter, params) {
+    const { ctx, service, logger } = this;
+    const { model } = ctx;
+    const { Tag } = model;
+
+    try {
+      const filteredParams = service.utils.filterData({ data: params, model: Tag, exclude: ['_id'] });
+
+      const res = await Tag.updateOne(filter, filteredParams).lean();
+      logger.info('Update tag successfully');
+      return res.n > 0 ? { success: true } : {};
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1002, 'Failed to update tag to database');
+    }
+  }
+
+  async deleteOne(filter) {
+    const { ctx, logger } = this;
+    const { model } = ctx;
+    const { Post, Tag } = model;
+
+    try {
+      const tag = await Tag.findOne(filter, { _id: 1 }).lean();
+      await Post.updateMany({ tag_id: tag._id }, { tag_id: null }).lean();
+      const res = await Tag.deleteOne(filter).lean();
+      logger.info('Delete tag successfully');
+      return res.n > 0 ? { success: true } : {};
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1003, 'Failed to delete tag to database');
+    }
+  }
 }
 
 module.exports = TagService;

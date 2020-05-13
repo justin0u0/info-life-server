@@ -52,4 +52,6 @@ module.exports = (app) => {
   router.post('/admin/tag/addTag', controller.tag.addTag);
   router.post('/admin/tag/getTag', controller.tag.getTag);
   router.post('/admin/tag/getTags', controller.tag.getTags);
+  router.post('/admin/tag/modifyTag', controller.tag.modifyTag);
+  router.post('/admin/tag/removeTag', controller.tag.removeTag);
 };

@@ -114,6 +114,26 @@ class PostController extends Controller {
       _id: {
         type: 'object_id',
       },
+      tag_id: {
+        type: 'object_id',
+        required: false,
+      },
+      title: {
+        type: 'string',
+        required: false,
+      },
+      subtitle: {
+        type: 'string',
+        required: false,
+      },
+      content: {
+        type: 'string',
+        required: false,
+      },
+      cover: {
+        type: 'file',
+        required: false,
+      },
     };
 
     try {
