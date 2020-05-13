@@ -2,6 +2,8 @@
 
 const { Controller } = require('egg');
 
+// TODO: Post service add images
+
 class PostController extends Controller {
   async addPost() {
     const { ctx, service } = this;

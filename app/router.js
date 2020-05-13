@@ -40,6 +40,9 @@ module.exports = (app) => {
   // Tags
   router.post('/tag/getTags', controller.tag.getTags);
 
+  // Comments
+  router.post('/comment/addComment', authentication(), authorization(['normal']), controller.comment.addComment);
+
   // The following APIs are for admin user
   // Users
   router.post('/admin/user/addUser', controller.user.addUser);
