@@ -1,11 +1,11 @@
+
 'use strict';
 
-module.exports = (app, strict) => {
-  return async function authenticationMiddleware(ctx, next) {
+module.exports = (app, allowRoles) => {
+  return async function authorizationMiddleware(ctx, next) {
     const { jwt } = app;
     const { request, response } = ctx;
     const auth = request.headers.authorization;
-
     if (auth && auth.startsWith('Bearer ')) {
       try {
         const token = auth.slice(7);
@@ -15,21 +15,16 @@ module.exports = (app, strict) => {
             resolve(decoded);
           });
         });
-        ctx.state.user = { ...verifyResult };
+        const { role } = verifyResult;
+        if (!allowRoles.includes(role)) throw 'User role is not allow';
         await next();
       } catch (error) {
         response.status = 401;
-        response.body = { code: 2001, error: 'Authentication failed', data: error };
+        response.body = { code: 2002, error: 'Authorization failed', data: error };
       }
     } else {
-      if (strict) {
-        response.status = 401;
-        response.body = { code: 2001, error: 'Authentication failed' };
-      } else {
-        // Set default empty object
-        ctx.state.user = {};
-        await next();
-      }
+      response.status = 401;
+      response.body = { code: 2002, error: 'Authorization failed' };
     }
   };
 };
