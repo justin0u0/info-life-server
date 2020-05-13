@@ -76,12 +76,14 @@ class PostService extends Service {
     }
   }
 
-  async updateOne(filter, params) {
+  async updateOne(filter, params, isAdmin = false) {
     const { ctx, service, logger } = this;
     const { model } = ctx;
     const { Post } = model;
 
     try {
+      const include = ['tag_id', 'title', 'subtitle', 'content', 'images', 'cover'];
+      if (isAdmin) include.push(...['share_count', 'view_count']);
       const filteredParams = service.utils.filterData({
         data: params,
         model: Post,

@@ -44,7 +44,7 @@ class PostController extends Controller {
     const { ctx, service } = this;
     const { request, response } = ctx;
     const { body } = request;
-    
+
     // Validate Parameters
     const rule = {
       user_id: {
@@ -244,6 +244,49 @@ class PostController extends Controller {
     }
   }
 
+  async _modifyPost() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+
+    // Validate parameters
+    const rule = {
+      _id: {
+        type: 'object_id',
+      },
+      tag_id: {
+        type: 'object_id',
+        required: false,
+      },
+      title: {
+        type: 'string',
+        required: false,
+      },
+      subtitle: {
+        type: 'string',
+        required: false,
+      },
+      content: {
+        type: 'string',
+        required: false,
+      },
+      cover: {
+        type: 'file',
+        required: false,
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { _id, ...params } = body;
+      const res = await service.post.updateOne({ _id }, params, true);
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
   async removePost() {
     const { ctx, service } = this;
     const { request, response } = ctx;
@@ -261,6 +304,29 @@ class PostController extends Controller {
       ctx.validate(rule, body);
       const { _id } = body;
       const res = await service.post.deleteOne({ _id, user_id });
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
+  async _removePost() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+
+    // Validate parameters
+    const rule = {
+      _id: {
+        type: 'object_id',
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { _id } = body;
+      const res = await service.post.deleteOne({ _id });
       response.body = res;
     } catch (error) {
       response.status = error.status;
@@ -325,6 +391,32 @@ class PostController extends Controller {
       ctx.validate(rule, body);
       const { _id, is_published } = body;
       const res = await service.post.updateIsPublished({ _id, user_id }, is_published);
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
+  async _modifyIsPublished() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+
+    // Validate parameters
+    const rule = {
+      _id: {
+        type: 'object_id',
+      },
+      is_published: {
+        type: 'boolean',
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { _id, is_published } = body;
+      const res = await service.post.updateIsPublished({ _id }, is_published);
       response.body = res;
     } catch (error) {
       response.status = error.status;
