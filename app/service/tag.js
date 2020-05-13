@@ -73,8 +73,12 @@ class TagService extends Service {
     const { Post, Tag } = model;
 
     try {
+      // Update/Delete tag related data
       const tag = await Tag.findOne(filter, { _id: 1 }).lean();
-      await Post.updateMany({ tag_id: tag._id }, { tag_id: null }).lean();
+      if (tag) {
+        await Post.updateMany({ tag_id: tag._id }, { tag_id: null }).lean();
+      }
+
       const res = await Tag.deleteOne(filter).lean();
       logger.info('Delete tag successfully');
       return res.n > 0 ? { success: true } : {};
