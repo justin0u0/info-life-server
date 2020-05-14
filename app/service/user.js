@@ -78,7 +78,6 @@ class UserService extends Service {
 
     try {
       const res = await User.deleteOne(filter).lean();
-      // TODO: Delete related model too
       logger.info('Delete user successfully');
       return res.n > 0 ? { success: true } : {};
     } catch (error) {
