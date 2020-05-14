@@ -75,6 +75,49 @@ class CommentService extends Service {
       throw new ErrorRes(1001, 'Failed to find comments in database', error);
     }
   }
+
+  async updateOne(filter, params) {
+    const { ctx, service, logger } = this;
+    const { model } = ctx;
+    const { Comment } = model;
+
+    try {
+      const filteredParams = service.utils.filterData({
+        data: filter,
+        model: Comment,
+        include: ['content', 'images'],
+      });
+      filteredParams.updated_at = Date.now();
+
+      const res = await Comment.updateOne(filter, params).lean();
+      logger.info('Update comment successfully');
+      return res.n > 0 ? { success: true } : {};
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1002, 'Failed to update comment in database', error);
+    }
+  }
+
+  async deleteOne(filter) {
+    const { ctx, logger } = this;
+    const { model } = ctx;
+    const { Comment } = model;
+
+    try {
+      const comment = await Comment.findOne(filter, { _id: 1, parent_type: 1 }).lean();
+      if (comment) {
+        // Delete all subcomment under this comment
+        await Comment.deleteMany({ parent_type: 'comment', parent_id: comment._id }).lean();
+      }
+
+      const res = await Comment.deleteOne(filter).lean();
+      logger.info('Delete comment successfully');
+      return res.n > 0 ? { success: true } : {};
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1003, 'Failed to remove comment to database');
+    }
+  }
 }
 
 module.exports = CommentService;
