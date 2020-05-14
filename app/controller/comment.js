@@ -38,6 +38,42 @@ class CommentController extends Controller {
     }
   }
 
+  async _addComment() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+
+    // Validate parameters
+    const rule = {
+      user_id: {
+        type: 'object_id',
+      },
+      parent_type: {
+        type: 'enum',
+        values: ['post', 'comment'],
+      },
+      parent_id: {
+        type: 'object_id',
+      },
+      content: {
+        type: 'string',
+      },
+      images: {
+        type: 'files',
+        required: false,
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const res = await service.comment.create(body);
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
   async getComment() {
     const { ctx, service } = this;
     const { request, response } = ctx;
@@ -128,6 +164,36 @@ class CommentController extends Controller {
     }
   }
 
+  async _modifyComment() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+
+    // Validate parameters
+    const rule = {
+      _id: {
+        type: 'object_id',
+      },
+      content: {
+        type: 'string',
+      },
+      images: {
+        type: 'files',
+        required: false,
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { _id, ...params } = body;
+      const res = await service.comment.updateOne({ _id }, params);
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
   async removeComment() {
     const { ctx, service } = this;
     const { request, response } = ctx;
@@ -145,6 +211,29 @@ class CommentController extends Controller {
       ctx.validate(rule, body);
       const { _id } = body;
       const res = await service.comment.deleteOne({ _id, user_id });
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
+  async _removeComment() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+
+    // Validate parameters
+    const rule = {
+      _id: {
+        type: 'object_id',
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { _id } = body;
+      const res = await service.comment.deleteOne({ _id });
       response.body = res;
     } catch (error) {
       response.status = error.status;
