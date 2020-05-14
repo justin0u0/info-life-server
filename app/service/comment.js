@@ -18,10 +18,10 @@ class CommentService extends Service {
       });
       filteredParams.created_at = Date.now();
 
-      // Insure user exists
+      // Ensure user exists
       const user = await User.exists({ _id: params.user_id });
       if (!user) throw 'Failed to find user in database';
-      // Insure parent exists
+      // Ensure parent exists
       if (params.parent_type === 'post') {
         const post = await Post.exists({ _id: params.parent_id });
         if (!post) throw 'Failed to find post in database';
