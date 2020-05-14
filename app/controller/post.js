@@ -2,8 +2,6 @@
 
 const { Controller } = require('egg');
 
-// TODO: Post service add images
-
 class PostController extends Controller {
   async addPost() {
     const { ctx, service } = this;
@@ -24,6 +22,10 @@ class PostController extends Controller {
       },
       content: {
         type: 'string',
+      },
+      images: {
+        type: 'files',
+        required: false,
       },
       cover: {
         type: 'file',
@@ -63,6 +65,10 @@ class PostController extends Controller {
       },
       content: {
         type: 'string',
+      },
+      images: {
+        type: 'files',
+        required: false,
       },
       cover: {
         type: 'file',
@@ -229,6 +235,10 @@ class PostController extends Controller {
         type: 'string',
         required: false,
       },
+      images: {
+        type: 'files',
+        required: false,
+      },
       cover: {
         type: 'file',
         required: false,
@@ -270,6 +280,10 @@ class PostController extends Controller {
       },
       content: {
         type: 'string',
+        required: false,
+      },
+      files: {
+        type: 'files',
         required: false,
       },
       cover: {
