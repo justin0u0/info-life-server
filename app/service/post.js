@@ -21,10 +21,10 @@ class PostService extends Service {
       filteredParams.view_count = 0;
       filteredParams.is_published = false;
 
-      // Insure user exists
+      // Ensure user exists
       const user = await User.exists({ _id: params.user_id });
       if (!user) throw 'Failed to find user in database';
-      // Insure tag exists
+      // Ensure tag exists
       const tag = await Tag.exists({ _id: params.tag_id });
       if (!tag) throw 'Failed to find tag in database';
 

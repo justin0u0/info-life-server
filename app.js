@@ -20,4 +20,16 @@ module.exports = (app) => {
       }
     }
   });
+
+  app.validator.addRule('files', (rule, value) => {
+    const properties = ['file_type', 'file_name', 'file_url'];
+    if (!Array.isArray(value)) return 'Invalid parameter, invalid files';
+    for (const file of value) {
+      for (const property of properties) {
+        if (!file[property] || typeof file[property] !== 'string') {
+          return 'Invalid parameter, invalid files';
+        }
+      }
+    }
+  });
 };

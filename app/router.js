@@ -40,6 +40,13 @@ module.exports = (app) => {
   // Tags
   router.post('/tag/getTags', controller.tag.getTags);
 
+  // Comments
+  router.post('/comment/addComment', authentication(), authorization(['normal']), controller.comment.addComment);
+  router.post('/comment/getComment', controller.comment.getComment);
+  router.post('/comment/getComments', controller.comment.getComments);
+  router.post('/comment/modifyComment', authentication(), authorization(['normal']), controller.comment.modifyComment);
+  router.post('/comment/removeComment', authentication(), authorization(['normal']), controller.comment.removeComment);
+
   // The following APIs are for admin user
   // Users
   router.post('/admin/user/addUser', controller.user.addUser);
@@ -62,4 +69,11 @@ module.exports = (app) => {
   router.post('/admin/tag/getTags', controller.tag.getTags);
   router.post('/admin/tag/modifyTag', controller.tag.modifyTag);
   router.post('/admin/tag/removeTag', controller.tag.removeTag);
+
+  // Comments
+  router.post('/admin/comment/addComment', controller.comment._addComment);
+  router.post('/admin/comment/getComment', controller.comment.getComment);
+  router.post('/admin/comment/getComments', controller.comment.getComments);
+  router.post('/admin/comment/modifyComment', controller.comment._modifyComment);
+  router.post('/admin/comment/removeComment', controller.comment._removeComment);
 };
