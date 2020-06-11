@@ -55,7 +55,7 @@ module.exports = (appInfo) => {
   // cors
   config.cors = {
     origin: '*',
-    allowHeaders: 'Content-Type, Assecc-Control-Allow-Origin, Authorization',
+    allowHeaders: 'Content-Type, Access-Control-Allow-Origin, Authorization',
     allowMethods: 'GET, HEAD, PUT, POST, DELETE',
   };
 
