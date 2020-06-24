@@ -22,17 +22,13 @@ module.exports = (app) => {
     strict: 'throw',
   });
 
-  const questionSchema = new Schema({
+  const answerSchema = new Schema({
     user_id: {
       type: mongoose.Types.ObjectId,
       required: true,
     },
-    tag_id: {
+    question_id: {
       type: mongoose.Types.ObjectId,
-      required: true,
-    },
-    title: {
-      type: String,
       required: true,
     },
     content: {
@@ -41,13 +37,6 @@ module.exports = (app) => {
     },
     images: {
       type: [fileSchema],
-    },
-    is_solved: {
-      type: Boolean,
-      required: true,
-    },
-    best_answer_id: {
-      type: mongoose.Types.ObjectId,
     },
     created_at: {
       type: Number,
@@ -60,9 +49,7 @@ module.exports = (app) => {
     strict: 'throw',
   });
 
-  questionSchema.index({ user_id: 1 });
-  questionSchema.index({ tag_id: 1, created_at: -1 });
-  questionSchema.index({ is_solved: 1, created_at: -1 });
+  answerSchema.index({ question_id: 1, created_at: -1 });
 
-  return mongoose.model('Question', questionSchema);
+  return mongoose.model('Answer', answerSchema);
 };
