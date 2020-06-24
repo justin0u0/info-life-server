@@ -86,6 +86,7 @@ class QuestionService extends Service {
       // Ensure `is_solved = true` and should carry `best_answer_id`
       if (params.is_solved === true) {
         if (!params.best_answer_id) throw 'Setting \'is_solved = true\' should carry \'best_answer_id\'';
+        // Ensure answer exists
         const answer = await Answer.exists({ _id: params.best_answer_id });
         if (!answer) throw 'Failed to find answer in database';
       }
