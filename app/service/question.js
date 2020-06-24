@@ -75,7 +75,7 @@ class QuestionService extends Service {
   async updateOne(filter, params) {
     const { ctx, service, logger } = this;
     const { model } = ctx;
-    const { Question, Tag } = model;
+    const { Question, Tag, Answer } = model;
 
     try {
       // Ensure tag exists
@@ -86,7 +86,8 @@ class QuestionService extends Service {
       // Ensure `is_solved = true` and should carry `best_answer_id`
       if (params.is_solved === true) {
         if (!params.best_answer_id) throw 'Setting \'is_solved = true\' should carry \'best_answer_id\'';
-        // TODO: Ensure Answer exists
+        const answer = await Answer.exists({ _id: params.best_answer_id });
+        if (!answer) throw 'Failed to find answer in database';
       }
 
       const filteredParams = service.utils.filterData({
