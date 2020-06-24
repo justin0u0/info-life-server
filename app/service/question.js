@@ -10,6 +10,13 @@ class QuestionService extends Service {
     const { Question, User, Tag } = model;
 
     try {
+      // Ensure user exists
+      const user = await User.exists({ _id: params.user_id });
+      if (!user) throw 'Failed to find user in database';
+      // Ensure tag exists
+      const tag = await Tag.exists({ _id: params.tag_id, type: 'question' });
+      if (!tag) throw 'Failed to find tag in database';
+
       // Filter parameters
       const filteredParams = service.utils.filterData({
         data: params,
@@ -18,13 +25,6 @@ class QuestionService extends Service {
       });
       filteredParams.is_solved = false;
       filteredParams.created_at = Date.now();
-
-      // Ensure user exists
-      const user = await User.exists({ _id: params.user_id });
-      if (!user) throw 'Failed to find user in database';
-      // Ensure tag exists
-      const tag = await Tag.exists({ _id: params.tag_id, type: 'question' });
-      if (!tag) throw 'Failed to find tag in database';
 
       const res = await Question.create(filteredParams);
       logger.info('Create question successfully');
@@ -75,7 +75,7 @@ class QuestionService extends Service {
   async updateOne(filter, params) {
     const { ctx, service, logger } = this;
     const { model } = ctx;
-    const { Question, Tag } = model;
+    const { Question, Tag, Answer } = model;
 
     try {
       // Ensure tag exists
@@ -86,7 +86,9 @@ class QuestionService extends Service {
       // Ensure `is_solved = true` and should carry `best_answer_id`
       if (params.is_solved === true) {
         if (!params.best_answer_id) throw 'Setting \'is_solved = true\' should carry \'best_answer_id\'';
-        // TODO: Ensure Answer exists
+        // Ensure answer exists
+        const answer = await Answer.exists({ _id: params.best_answer_id });
+        if (!answer) throw 'Failed to find answer in database';
       }
 
       const filteredParams = service.utils.filterData({

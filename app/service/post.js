@@ -10,6 +10,13 @@ class PostService extends Service {
     const { User, Post, Tag } = model;
 
     try {
+      // Ensure user exists
+      const user = await User.exists({ _id: params.user_id });
+      if (!user) throw 'Failed to find user in database';
+      // Ensure tag exists
+      const tag = await Tag.exists({ _id: params.tag_id, type: 'post' });
+      if (!tag) throw 'Failed to find tag in database';
+
       // Filter parameters
       const filteredParams = service.utils.filterData({
         data: params,
@@ -20,13 +27,6 @@ class PostService extends Service {
       filteredParams.share_count = 0;
       filteredParams.view_count = 0;
       filteredParams.is_published = false;
-
-      // Ensure user exists
-      const user = await User.exists({ _id: params.user_id });
-      if (!user) throw 'Failed to find user in database';
-      // Ensure tag exists
-      const tag = await Tag.exists({ _id: params.tag_id, type: 'post' });
-      if (!tag) throw 'Failed to find tag in database';
 
       const res = await Post.create(filteredParams);
       logger.info('Create post successfully');

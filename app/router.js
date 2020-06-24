@@ -54,6 +54,13 @@ module.exports = (app) => {
   router.post('/question/modifyQuestion', authentication(), authorization(['normal']), controller.question.modifyQuestion);
   router.post('/question/removeQuestion', authentication(), authorization(['normal']), controller.question.removeQuestion);
 
+  // Answers
+  router.post('/answer/addAnswer', authentication(), authorization(['normal']), controller.answer.addAnswer);
+  router.post('/answer/getAnswer', controller.answer.getAnswer);
+  router.post('/answer/getAnswers', controller.answer.getAnswers);
+  router.post('/answer/modifyAnswer', authentication(), authorization(['normal']), controller.answer.modifyAnswer);
+  router.post('/answer/removeAnswer', authentication(), authorization(['normal']), controller.answer.removeAnswer);
+
   // The following APIs are for admin user
   // Users
   router.post('/admin/user/addUser', controller.user.addUser);
@@ -90,4 +97,11 @@ module.exports = (app) => {
   router.post('/admin/question/getQuestions', controller.question.getQuestions);
   router.post('/admin/question/modifyQuestion', controller.question._modifyQuestion);
   router.post('/admin/question/removeQuestion', controller.question._removeQuestion);
+
+  // Answers
+  router.post('/admin/answer/addAnswer', controller.answer._addAnswer);
+  router.post('/admin/answer/getAnswer', controller.answer.getAnswer);
+  router.post('/admin/answer/getAnswers', controller.answer.getAnswers);
+  router.post('/admin/answer/modifyAnswer', controller.answer._modifyAnswer);
+  router.post('/admin/answer/removeAnswer', controller.answer._removeAnswer);
 };
