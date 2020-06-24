@@ -16,6 +16,7 @@ class QuestionController extends Controller {
       },
       title: {
         type: 'string',
+        max: 150,
       },
       content: {
         type: 'string',
@@ -52,6 +53,7 @@ class QuestionController extends Controller {
       },
       title: {
         type: 'string',
+        max: 150,
       },
       content: {
         type: 'string',
@@ -148,6 +150,7 @@ class QuestionController extends Controller {
       },
       title: {
         type: 'string',
+        max: 150,
         required: false,
       },
       content: {
@@ -195,6 +198,7 @@ class QuestionController extends Controller {
       },
       title: {
         type: 'string',
+        max: 150,
         required: false,
       },
       content: {
