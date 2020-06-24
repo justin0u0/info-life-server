@@ -125,6 +125,68 @@ class AnswerController extends Controller {
     }
   }
 
+  async modifyAnswer() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+    const { _id: user_id } = ctx.state.user;
+
+    // Validate parameters
+    const rule = {
+      _id: {
+        type: 'object_id',
+      },
+      content: {
+        type: 'content_object',
+        required: false,
+      },
+      images: {
+        type: 'files',
+        required: false,
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { _id, ...params } = body;
+      const res = await service.answer.updateOne({ _id, user_id }, params);
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
+  async _modifyAnswer() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+
+    // Validate parameters
+    const rule = {
+      _id: {
+        type: 'object_id',
+      },
+      content: {
+        type: 'content_object',
+        required: false,
+      },
+      images: {
+        type: 'files',
+        required: false,
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { _id, ...params } = body;
+      const res = await service.answer.updateOne({ _id }, params);
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
 }
 
 module.exports = AnswerController;

@@ -69,6 +69,28 @@ class AnswerService extends Service {
       throw new ErrorRes(1001, 'Failed to find answers in database', error);
     }
   }
+
+  async updateOne(filter, params) {
+    const { ctx, service, logger } = this;
+    const { model } = ctx;
+    const { Answer } = model;
+
+    try {
+      const filteredParams = service.utils.filterData({
+        data: params,
+        model: Answer,
+        exclude: ['_id', 'user_id', 'question_id', 'created_at', 'updated_at'],
+      });
+      filteredParams.updated_at = Date.now();
+
+      const res = await Answer.updateOne(filter, filteredParams).lean();
+      logger.info('Update answer successfully');
+      return res.n > 0 ? { success: true } : {};
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1002, 'Failed to update answer in database', error);
+    }
+  }
 }
 
 module.exports = AnswerService;
