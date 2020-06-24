@@ -83,13 +83,13 @@ class CommentService extends Service {
 
     try {
       const filteredParams = service.utils.filterData({
-        data: filter,
+        data: params,
         model: Comment,
         include: ['content', 'images'],
       });
       filteredParams.updated_at = Date.now();
 
-      const res = await Comment.updateOne(filter, params).lean();
+      const res = await Comment.updateOne(filter, filteredParams).lean();
       logger.info('Update comment successfully');
       return res.n > 0 ? { success: true } : {};
     } catch (error) {
@@ -115,7 +115,7 @@ class CommentService extends Service {
       return res.n > 0 ? { success: true } : {};
     } catch (error) {
       logger.error(error);
-      throw new ErrorRes(1003, 'Failed to remove comment to database');
+      throw new ErrorRes(1003, 'Failed to delete comment to database');
     }
   }
 }

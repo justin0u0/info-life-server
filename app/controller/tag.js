@@ -19,12 +19,16 @@ class TagController extends Controller {
         min: 0,
         max: (256 ** 3) - 1,
       },
+      type: {
+        type: 'enum',
+        values: ['post', 'question'],
+      },
     };
 
     try {
       ctx.validate(rule, body);
-      const { name, color } = body;
-      const res = await service.tag.create({ name, color });
+      const { name, color, type } = body;
+      const res = await service.tag.create({ name, color, type });
       response.body = res;
     } catch (error) {
       response.status = error.status;

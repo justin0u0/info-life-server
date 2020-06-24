@@ -16,12 +16,14 @@ class PostController extends Controller {
       },
       title: {
         type: 'string',
+        max: 100,
       },
       subtitle: {
         type: 'string',
+        max: 200,
       },
       content: {
-        type: 'string',
+        type: 'content_object',
       },
       images: {
         type: 'files',
@@ -59,12 +61,14 @@ class PostController extends Controller {
       },
       title: {
         type: 'string',
+        max: 100,
       },
       subtitle: {
         type: 'string',
+        max: 200,
       },
       content: {
-        type: 'string',
+        type: 'content_object',
       },
       images: {
         type: 'files',
@@ -225,14 +229,16 @@ class PostController extends Controller {
       },
       title: {
         type: 'string',
+        max: 100,
         required: false,
       },
       subtitle: {
         type: 'string',
+        max: 200,
         required: false,
       },
       content: {
-        type: 'string',
+        type: 'content_object',
         required: false,
       },
       images: {
@@ -272,14 +278,16 @@ class PostController extends Controller {
       },
       title: {
         type: 'string',
+        max: 100,
         required: false,
       },
       subtitle: {
         type: 'string',
+        max: 200,
         required: false,
       },
       content: {
-        type: 'string',
+        type: 'content_object',
         required: false,
       },
       files: {

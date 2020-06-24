@@ -32,4 +32,15 @@ module.exports = (app) => {
       }
     }
   });
+
+  app.validator.addRule('content_object', (rule, value) => {
+    try {
+      const contentObj = JSON.parse(value);
+      if (contentObj.type !== 'doc' || !Array.isArray(contentObj.content)) {
+        return 'Invalid parameter, invalid content object';
+      }
+    } catch (error) {
+      return 'Invalid parameter, invalid content object';
+    }
+  });
 };

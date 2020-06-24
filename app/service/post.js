@@ -25,7 +25,7 @@ class PostService extends Service {
       const user = await User.exists({ _id: params.user_id });
       if (!user) throw 'Failed to find user in database';
       // Ensure tag exists
-      const tag = await Tag.exists({ _id: params.tag_id });
+      const tag = await Tag.exists({ _id: params.tag_id, type: 'post' });
       if (!tag) throw 'Failed to find tag in database';
 
       const res = await Post.create(filteredParams);
@@ -79,9 +79,15 @@ class PostService extends Service {
   async updateOne(filter, params, isAdmin = false) {
     const { ctx, service, logger } = this;
     const { model } = ctx;
-    const { Post } = model;
+    const { Post, Tag } = model;
 
     try {
+      // Ensure tag exists
+      if (params.tag_id) {
+        const tag = await Tag.exists({ _id: params.tag_id, type: 'post' });
+        if (!tag) throw 'Failed to find tag in database';
+      }
+
       const include = ['tag_id', 'title', 'subtitle', 'content', 'images', 'cover'];
       if (isAdmin) include.push(...['share_count', 'view_count']);
       const filteredParams = service.utils.filterData({
@@ -107,6 +113,7 @@ class PostService extends Service {
 
     try {
       const res = await Post.deleteOne(filter).lean();
+      // TODO: Delete all comments
       logger.info('Delete post successfully');
       return res.n > 0 ? { success: true } : {};
     } catch (error) {

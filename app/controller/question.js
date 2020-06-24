@@ -2,8 +2,8 @@
 
 const { Controller } = require('egg');
 
-class CommentController extends Controller {
-  async addComment() {
+class QuestionController extends Controller {
+  async addQuestion() {
     const { ctx, service } = this;
     const { request, response } = ctx;
     const { body } = request;
@@ -11,12 +11,12 @@ class CommentController extends Controller {
 
     // Validate parameters
     const rule = {
-      parent_type: {
-        type: 'enum',
-        values: ['post', 'comment'],
-      },
-      parent_id: {
+      tag_id: {
         type: 'object_id',
+      },
+      title: {
+        type: 'string',
+        max: 150,
       },
       content: {
         type: 'content_object',
@@ -30,7 +30,7 @@ class CommentController extends Controller {
     try {
       ctx.validate(rule, body);
       body.user_id = user_id;
-      const res = await service.comment.create(body);
+      const res = await service.question.create(body);
       response.body = res;
     } catch (error) {
       response.status = error.status;
@@ -38,7 +38,7 @@ class CommentController extends Controller {
     }
   }
 
-  async _addComment() {
+  async _addQuestion() {
     const { ctx, service } = this;
     const { request, response } = ctx;
     const { body } = request;
@@ -48,12 +48,12 @@ class CommentController extends Controller {
       user_id: {
         type: 'object_id',
       },
-      parent_type: {
-        type: 'enum',
-        values: ['post', 'comment'],
-      },
-      parent_id: {
+      tag_id: {
         type: 'object_id',
+      },
+      title: {
+        type: 'string',
+        max: 150,
       },
       content: {
         type: 'content_object',
@@ -66,7 +66,7 @@ class CommentController extends Controller {
 
     try {
       ctx.validate(rule, body);
-      const res = await service.comment.create(body);
+      const res = await service.question.create(body);
       response.body = res;
     } catch (error) {
       response.status = error.status;
@@ -74,7 +74,7 @@ class CommentController extends Controller {
     }
   }
 
-  async getComment() {
+  async getQuestion() {
     const { ctx, service } = this;
     const { request, response } = ctx;
     const { body } = request;
@@ -89,7 +89,7 @@ class CommentController extends Controller {
     try {
       ctx.validate(rule, body);
       const { _id } = body;
-      const res = await service.comment.findOne({ _id });
+      const res = await service.question.findOne({ _id });
       response.body = res;
     } catch (error) {
       response.status = error.status;
@@ -97,7 +97,7 @@ class CommentController extends Controller {
     }
   }
 
-  async getComments() {
+  async getQuestions() {
     const { ctx, service } = this;
     const { request, response } = ctx;
     const { body } = request;
@@ -125,7 +125,7 @@ class CommentController extends Controller {
     try {
       ctx.validate(rule, body);
       const { filter = {}, limit = 10, skip = 0, sort = {} } = body;
-      const res = await service.comment.findAll({ filter, limit, skip, sort });
+      const res = await service.question.findAll({ filter, limit, skip, sort });
       response.body = res;
     } catch (error) {
       response.status = error.status;
@@ -133,7 +133,7 @@ class CommentController extends Controller {
     }
   }
 
-  async modifyComment() {
+  async modifyQuestion() {
     const { ctx, service } = this;
     const { request, response } = ctx;
     const { body } = request;
@@ -144,6 +144,15 @@ class CommentController extends Controller {
       _id: {
         type: 'object_id',
       },
+      tag_id: {
+        type: 'object_id',
+        required: false,
+      },
+      title: {
+        type: 'string',
+        max: 150,
+        required: false,
+      },
       content: {
         type: 'content_object',
         required: false,
@@ -152,12 +161,20 @@ class CommentController extends Controller {
         type: 'files',
         required: false,
       },
+      is_solved: {
+        type: 'boolean',
+        required: false,
+      },
+      best_answer_id: {
+        type: 'object_id',
+        required: false,
+      },
     };
 
     try {
       ctx.validate(rule, body);
       const { _id, ...params } = body;
-      const res = await service.comment.updateOne({ _id, user_id }, params);
+      const res = await service.question.updateOne({ _id, user_id }, params);
       response.body = res;
     } catch (error) {
       response.status = error.status;
@@ -165,7 +182,7 @@ class CommentController extends Controller {
     }
   }
 
-  async _modifyComment() {
+  async _modifyQuestion() {
     const { ctx, service } = this;
     const { request, response } = ctx;
     const { body } = request;
@@ -175,11 +192,29 @@ class CommentController extends Controller {
       _id: {
         type: 'object_id',
       },
+      tag_id: {
+        type: 'object_id',
+        required: false,
+      },
+      title: {
+        type: 'string',
+        max: 150,
+        required: false,
+      },
       content: {
         type: 'content_object',
+        required: false,
       },
       images: {
         type: 'files',
+        required: false,
+      },
+      is_solved: {
+        type: 'boolean',
+        required: false,
+      },
+      best_answer_id: {
+        type: 'object_id',
         required: false,
       },
     };
@@ -187,7 +222,7 @@ class CommentController extends Controller {
     try {
       ctx.validate(rule, body);
       const { _id, ...params } = body;
-      const res = await service.comment.updateOne({ _id }, params);
+      const res = await service.question.updateOne({ _id }, params);
       response.body = res;
     } catch (error) {
       response.status = error.status;
@@ -195,7 +230,7 @@ class CommentController extends Controller {
     }
   }
 
-  async removeComment() {
+  async removeQuestion() {
     const { ctx, service } = this;
     const { request, response } = ctx;
     const { body } = request;
@@ -211,7 +246,7 @@ class CommentController extends Controller {
     try {
       ctx.validate(rule, body);
       const { _id } = body;
-      const res = await service.comment.deleteOne({ _id, user_id });
+      const res = await service.question.deleteOne({ _id, user_id });
       response.body = res;
     } catch (error) {
       response.status = error.status;
@@ -219,7 +254,7 @@ class CommentController extends Controller {
     }
   }
 
-  async _removeComment() {
+  async _removeQuestion() {
     const { ctx, service } = this;
     const { request, response } = ctx;
     const { body } = request;
@@ -234,7 +269,7 @@ class CommentController extends Controller {
     try {
       ctx.validate(rule, body);
       const { _id } = body;
-      const res = await service.comment.deleteOne({ _id });
+      const res = await service.question.deleteOne({ _id });
       response.body = res;
     } catch (error) {
       response.status = error.status;
@@ -243,4 +278,4 @@ class CommentController extends Controller {
   }
 }
 
-module.exports = CommentController;
+module.exports = QuestionController;
