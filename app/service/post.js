@@ -25,7 +25,7 @@ class PostService extends Service {
       const user = await User.exists({ _id: params.user_id });
       if (!user) throw 'Failed to find user in database';
       // Ensure tag exists
-      const tag = await Tag.exists({ _id: params.tag_id });
+      const tag = await Tag.exists({ _id: params.tag_id, type: 'post' });
       if (!tag) throw 'Failed to find tag in database';
 
       const res = await Post.create(filteredParams);

@@ -56,7 +56,7 @@ class TagService extends Service {
     const { Tag } = model;
 
     try {
-      const filteredParams = service.utils.filterData({ data: params, model: Tag, exclude: ['_id'] });
+      const filteredParams = service.utils.filterData({ data: params, model: Tag, exclude: ['_id', 'type'] });
 
       const res = await Tag.updateOne(filter, filteredParams).lean();
       logger.info('Update tag successfully');
@@ -89,7 +89,6 @@ class TagService extends Service {
   }
 
   // Utilities
-
   async tidyUpTag(datum) {
     const { ctx } = this;
     const { model } = ctx;
