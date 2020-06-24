@@ -51,6 +51,7 @@ module.exports = (app) => {
   router.post('/question/addQuestion', authentication(), authorization(['normal']), controller.question.addQuestion);
   router.post('/question/getQuestion', controller.question.getQuestion);
   router.post('/question/getQuestions', controller.question.getQuestions);
+  router.post('/question/modifyQuestion', authentication(), authorization(['normal']), controller.question.modifyQuestion);
 
   // The following APIs are for admin user
   // Users
@@ -86,4 +87,5 @@ module.exports = (app) => {
   router.post('/admin/question/addQuestion', controller.question._addQuestion);
   router.post('/admin/question/getQuestion', controller.question.getQuestion);
   router.post('/admin/question/getQuestions', controller.question.getQuestions);
+  router.post('/admin/question/modifyQuestion', controller.question._modifyQuestion);
 };

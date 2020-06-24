@@ -71,6 +71,39 @@ class QuestionService extends Service {
       throw new ErrorRes(1001, 'Failed to find questions in database', error);
     }
   }
+
+  async updateOne(filter, params) {
+    const { ctx, service, logger } = this;
+    const { model } = ctx;
+    const { Question, Tag } = model;
+
+    try {
+      // Ensure tag exists
+      if (params.tag_id) {
+        const tag = await Tag.exists({ _id: params.tag_id, type: 'question' });
+        if (!tag) throw 'Failed to find tag in database';
+      }
+      // Ensure `is_solved = true` and should carry `best_answer_id`
+      if (params.is_solved === true) {
+        if (!params.best_answer_id) throw 'Setting \'is_solved = true\' should carry \'best_answer_id\'';
+        // TODO: Ensure Answer exists
+      }
+
+      const filteredParams = service.utils.filterData({
+        data: params,
+        model: Question,
+        exclude: ['_id', 'user_id', 'created_at', 'updated_at'],
+      });
+      filteredParams.updated_at = Date.now();
+
+      const res = await Question.updateOne(filter, filteredParams).lean();
+      logger.info('Update question successfully');
+      return res.n > 0 ? { success: true } : {};
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1002, 'Failed to update question in database', error);
+    }
+  }
 }
 
 module.exports = QuestionService;

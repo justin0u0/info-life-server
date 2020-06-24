@@ -130,6 +130,101 @@ class QuestionController extends Controller {
       response.body = { code: error.code, error: error.message, data: error.errors };
     }
   }
+
+  async modifyQuestion() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+    const { _id: user_id } = ctx.state.user;
+
+    // Validate parameters
+    const rule = {
+      _id: {
+        type: 'object_id',
+      },
+      tag_id: {
+        type: 'object_id',
+        required: false,
+      },
+      title: {
+        type: 'string',
+        required: false,
+      },
+      content: {
+        type: 'string',
+        required: false,
+      },
+      images: {
+        type: 'files',
+        required: false,
+      },
+      is_solved: {
+        type: 'boolean',
+        required: false,
+      },
+      best_answer_id: {
+        type: 'object_id',
+        required: false,
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { _id, ...params } = body;
+      const res = await service.question.updateOne({ _id, user_id }, params);
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
+  async _modifyQuestion() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+
+    // Validate parameters
+    const rule = {
+      _id: {
+        type: 'object_id',
+      },
+      tag_id: {
+        type: 'object_id',
+        required: false,
+      },
+      title: {
+        type: 'string',
+        required: false,
+      },
+      content: {
+        type: 'string',
+        required: false,
+      },
+      images: {
+        type: 'files',
+        required: false,
+      },
+      is_solved: {
+        type: 'boolean',
+        required: false,
+      },
+      best_answer_id: {
+        type: 'object_id',
+        required: false,
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { _id, ...params } = body;
+      const res = await service.question.updateOne({ _id }, params);
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
 }
 
 module.exports = QuestionController;

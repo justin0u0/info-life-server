@@ -146,6 +146,7 @@ class CommentController extends Controller {
       },
       content: {
         type: 'string',
+        required: false,
       },
       images: {
         type: 'files',
