@@ -47,6 +47,9 @@ module.exports = (app) => {
   router.post('/comment/modifyComment', authentication(), authorization(['normal']), controller.comment.modifyComment);
   router.post('/comment/removeComment', authentication(), authorization(['normal']), controller.comment.removeComment);
 
+  // Questions
+  router.post('/question/addQuestion', authentication(), authorization(['normal']), controller.question.addQuestion);
+
   // The following APIs are for admin user
   // Users
   router.post('/admin/user/addUser', controller.user.addUser);
