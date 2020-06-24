@@ -91,6 +91,22 @@ class AnswerService extends Service {
       throw new ErrorRes(1002, 'Failed to update answer in database', error);
     }
   }
+
+  async deleteOne(filter) {
+    const { ctx, logger } = this;
+    const { model } = ctx;
+    const { Answer } = model;
+
+    try {
+      const res = await Answer.deleteOne(filter).lean();
+      logger.info('Delete answer successfully');
+      // TODO: delete all sub-answer
+      return res.n > 0 ? { success: true } : {};
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1003, 'Failed to delete answer to database');
+    }
+  }
 }
 
 module.exports = AnswerService;
