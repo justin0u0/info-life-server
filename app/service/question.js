@@ -104,6 +104,22 @@ class QuestionService extends Service {
       throw new ErrorRes(1002, 'Failed to update question in database', error);
     }
   }
+
+  async deleteOne(filter) {
+    const { ctx, logger } = this;
+    const { model } = ctx;
+    const { Question } = model;
+
+    try {
+      const res = await Question.deleteOne(filter).lean();
+      // TODO: Delete all answers
+      logger.info('Delete question successfully');
+      return res.n > 0 ? { success: true } : {};
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1003, 'Failed to delete question to database');
+    }
+  }
 }
 
 module.exports = QuestionService;

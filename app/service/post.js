@@ -107,6 +107,7 @@ class PostService extends Service {
 
     try {
       const res = await Post.deleteOne(filter).lean();
+      // TODO: Delete all comments
       logger.info('Delete post successfully');
       return res.n > 0 ? { success: true } : {};
     } catch (error) {
