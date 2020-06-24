@@ -10,14 +10,6 @@ class CommentService extends Service {
     const { Comment, User, Post } = model;
 
     try {
-      // Filter parameters
-      const filteredParams = service.utils.filterData({
-        data: params,
-        model: Comment,
-        exclude: ['created_at', 'updated_at'],
-      });
-      filteredParams.created_at = Date.now();
-
       // Ensure user exists
       const user = await User.exists({ _id: params.user_id });
       if (!user) throw 'Failed to find user in database';
@@ -30,6 +22,14 @@ class CommentService extends Service {
         if (!comment) throw 'Failed to find comment in database';
         if (comment.parent_type === 'comment') throw 'Cannot add a comment under a subcomment';
       }
+
+      // Filter parameters
+      const filteredParams = service.utils.filterData({
+        data: params,
+        model: Comment,
+        exclude: ['created_at', 'updated_at'],
+      });
+      filteredParams.created_at = Date.now();
 
       const res = await Comment.create(filteredParams);
       logger.info('Create comment successfully');

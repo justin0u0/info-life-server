@@ -10,6 +10,13 @@ class QuestionService extends Service {
     const { Question, User, Tag } = model;
 
     try {
+      // Ensure user exists
+      const user = await User.exists({ _id: params.user_id });
+      if (!user) throw 'Failed to find user in database';
+      // Ensure tag exists
+      const tag = await Tag.exists({ _id: params.tag_id, type: 'question' });
+      if (!tag) throw 'Failed to find tag in database';
+
       // Filter parameters
       const filteredParams = service.utils.filterData({
         data: params,
@@ -18,13 +25,6 @@ class QuestionService extends Service {
       });
       filteredParams.is_solved = false;
       filteredParams.created_at = Date.now();
-
-      // Ensure user exists
-      const user = await User.exists({ _id: params.user_id });
-      if (!user) throw 'Failed to find user in database';
-      // Ensure tag exists
-      const tag = await Tag.exists({ _id: params.tag_id, type: 'question' });
-      if (!tag) throw 'Failed to find tag in database';
 
       const res = await Question.create(filteredParams);
       logger.info('Create question successfully');
