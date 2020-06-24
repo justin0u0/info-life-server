@@ -23,7 +23,7 @@ class PostController extends Controller {
         max: 200,
       },
       content: {
-        type: 'string',
+        type: 'content_object',
       },
       images: {
         type: 'files',
@@ -68,7 +68,7 @@ class PostController extends Controller {
         max: 200,
       },
       content: {
-        type: 'string',
+        type: 'content_object',
       },
       images: {
         type: 'files',
@@ -238,7 +238,7 @@ class PostController extends Controller {
         required: false,
       },
       content: {
-        type: 'string',
+        type: 'content_object',
         required: false,
       },
       images: {
@@ -287,7 +287,7 @@ class PostController extends Controller {
         required: false,
       },
       content: {
-        type: 'string',
+        type: 'content_object',
         required: false,
       },
       files: {

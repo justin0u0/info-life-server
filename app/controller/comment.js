@@ -19,7 +19,7 @@ class CommentController extends Controller {
         type: 'object_id',
       },
       content: {
-        type: 'string',
+        type: 'content_object',
       },
       images: {
         type: 'files',
@@ -56,7 +56,7 @@ class CommentController extends Controller {
         type: 'object_id',
       },
       content: {
-        type: 'string',
+        type: 'content_object',
       },
       images: {
         type: 'files',
@@ -145,7 +145,7 @@ class CommentController extends Controller {
         type: 'object_id',
       },
       content: {
-        type: 'string',
+        type: 'content_object',
         required: false,
       },
       images: {
@@ -176,7 +176,7 @@ class CommentController extends Controller {
         type: 'object_id',
       },
       content: {
-        type: 'string',
+        type: 'content_object',
       },
       images: {
         type: 'files',

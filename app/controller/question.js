@@ -19,7 +19,7 @@ class QuestionController extends Controller {
         max: 150,
       },
       content: {
-        type: 'string',
+        type: 'content_object',
       },
       images: {
         type: 'files',
@@ -56,7 +56,7 @@ class QuestionController extends Controller {
         max: 150,
       },
       content: {
-        type: 'string',
+        type: 'content_object',
       },
       images: {
         type: 'files',
@@ -154,7 +154,7 @@ class QuestionController extends Controller {
         required: false,
       },
       content: {
-        type: 'string',
+        type: 'content_object',
         required: false,
       },
       images: {
@@ -202,7 +202,7 @@ class QuestionController extends Controller {
         required: false,
       },
       content: {
-        type: 'string',
+        type: 'content_object',
         required: false,
       },
       images: {
