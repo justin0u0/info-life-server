@@ -126,6 +126,20 @@ class ReactionService extends Service {
     }
   }
 
+  async deleteOne(filter) {
+    const { ctx, logger } = this;
+    const { model } = ctx;
+    const { Reaction } = model;
+
+    try {
+      const res = await Reaction.deleteOne(filter).lean();
+      logger.info('Delete reaction successfully');
+      return res.n > 0 ? { success: true } : {};
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1003, 'Failed to delete reaction to database');
+    }
+  }
 }
 
 module.exports = ReactionService;

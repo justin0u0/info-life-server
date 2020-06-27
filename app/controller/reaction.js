@@ -181,6 +181,57 @@ class ReactionController extends Controller {
       response.body = { code: error.code, error: error.message, data: error.errors };
     }
   }
+
+  async removeReaction() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+    const { _id: user_id } = ctx.state.user;
+
+    // Validate parameters
+    const rule = {
+      source_type: {
+        type: 'enum',
+        values: ['post', 'question', 'answer'],
+      },
+      source_id: {
+        type: 'object_id',
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { source_type, source_id } = body;
+      const res = await service.reaction.deleteOne({ source_type, source_id, user_id });
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
+  async _removeReaction() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+
+    // Validate parameters
+    const rule = {
+      _id: {
+        type: 'object_id',
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { _id } = body;
+      const res = await service.reaction.deleteOne({ _id });
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
 }
 
 module.exports = ReactionController;
