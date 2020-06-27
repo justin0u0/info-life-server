@@ -79,6 +79,44 @@ class CollectionController extends Controller {
     const { ctx, service } = this;
     const { request, response } = ctx;
     const { body } = request;
+    const { _id: user_id } = ctx.state.user;
+
+    // Validate parameters
+    const rule = {
+      filter: {
+        type: 'object',
+        required: false,
+      },
+      limit: {
+        type: 'integer',
+        required: false,
+      },
+      skip: {
+        type: 'integer',
+        required: false,
+      },
+      sort: {
+        type: 'object',
+        required: false,
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { filter = {}, limit = 10, skip = 0, sort = {} } = body;
+      filter.user_id = user_id;
+      const res = await service.collection.findAll({ filter, limit, skip, sort });
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
+  async _getCollections() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
 
     // Validate parameters
     const rule = {
