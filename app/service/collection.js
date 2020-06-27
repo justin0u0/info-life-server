@@ -93,6 +93,21 @@ class CollectionService extends Service {
       throw new ErrorRes(1004, 'Failed to count collections in database', error);
     }
   }
+
+  async deleteOne(filter) {
+    const { ctx, logger } = this;
+    const { model } = ctx;
+    const { Collection } = model;
+
+    try {
+      const res = await Collection.deleteOne(filter).lean();
+      logger.info('Delete collection successfully');
+      return res.n > 0 ? { success: true } : {};
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1003, 'Failed to delete collection to database');
+    }
+  }
 }
 
 module.exports = CollectionService;
