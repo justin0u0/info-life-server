@@ -45,8 +45,10 @@ class PostService extends Service {
     try {
       const post = await Post.findOne(filter).lean();
       if (post) {
-        await service.user.tidyUpUser(post);
-        await service.tag.tidyUpTag(post);
+        await Promise.all([
+          service.user.tidyUpUser(post),
+          service.tag.tidyUpTag(post),
+        ]);
       }
       logger.info('Find post successfully');
       return post;
@@ -65,8 +67,10 @@ class PostService extends Service {
       const total = await Post.countDocuments(filter).lean();
       const data = await Post.find(filter, null, { limit, skip, sort }).lean();
       if (data.length > 0) {
-        await service.user.tidyUpUsers(data);
-        await service.tag.tidyUpTags(data);
+        await Promise.all([
+          service.user.tidyUpUsers(data),
+          service.tag.tidyUpTags(data),
+        ]);
       }
       logger.info('Find posts successfully');
       return { total, data };
@@ -153,6 +157,66 @@ class PostService extends Service {
       logger.error(error);
       throw new ErrorRes(1002, `Failed to update post ${field} to database`, error);
     }
+  }
+
+  // Utilities
+
+  /**
+   * Assign post to datum by `datum.post_id`
+   * @param {Object} datum datum to format
+   * @param {Object} datum.post user._id
+   */
+  async tidyUpPost(datum) {
+    const { ctx, service } = this;
+    const { model } = ctx;
+    const { Post } = model;
+
+    const { post_id = null } = datum;
+    if (!post_id) throw 'Failed to tidy up post, invalid parameter';
+    const post = await Post.findOne({ _id: post_id }, {
+      user_id: 1,
+      title: 1,
+      subtitie: 1,
+      created_at: 1,
+      cover: 1,
+    }).lean();
+    // Tidy up user
+    await service.user.tidyUpUser(post);
+    datum.post = post;
+    return datum;
+  }
+
+  /**
+   * Assign post to each datum in data by `datum.post_id`
+   * @param {Object[]} data data to format
+   * @param {Object} data[].post_id post._id
+   */
+  async tidyUpPosts(data) {
+    const { ctx, service } = this;
+    const { model } = ctx;
+    const { Post } = model;
+
+    const postArr = [];
+    for (const datum of data) {
+      if (!datum.post_id) throw 'Failed to tidy up posts, invalid parameter';
+      postArr.push(datum.post_id);
+    }
+
+    const posts = await Post.find({ _id: postArr }, {
+      user_id: 1,
+      title: 1,
+      subtitie: 1,
+      created_at: 1,
+      cover: 1,
+    }).lean();
+    await service.user.tidyUpUsers(posts);
+    const postObj = {};
+    for (const post of posts) {
+      const { _id } = post;
+      postObj[_id] = post;
+    }
+    for (const datum of data) datum.post = postObj[datum.post_id];
+    return data;
   }
 }
 
