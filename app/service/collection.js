@@ -41,7 +41,10 @@ class CollectionService extends Service {
     try {
       const collection = await Collection.findOne(filter).lean();
       if (collection) {
-        await service.user.tidyUpUser(collection);
+        await Promise.all([
+          service.user.tidyUpUser(collection),
+          service.post.tidyUpPost(collection),
+        ]);
       }
       logger.info('Find collection successfully');
       return collection;
@@ -59,7 +62,10 @@ class CollectionService extends Service {
     try {
       const total = await Collection.countDocuments(filter).lean();
       const data = await Collection.find(filter, null, { limit, skip, sort }).lean();
-      await service.user.tidyUpUsers(data);
+      await Promise.all([
+        service.user.tidyUpUsers(data),
+        service.post.tidyUpPosts(data),
+      ]);
       logger.info('Find collecitons successfully');
       return { total, data };
     } catch (error) {
