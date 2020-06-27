@@ -81,6 +81,51 @@ class ReactionService extends Service {
       throw new ErrorRes(1001, 'Failed to find reactions in database', error);
     }
   }
+
+  async count(filter, currentUserId = null) {
+    const { ctx, logger } = this;
+    const { model } = ctx;
+    const { Reaction } = model;
+
+    try {
+      const like = await Reaction.countDocuments({ ...filter, type: 'like' }).lean();
+      const dislike = await Reaction.countDocuments({ ...filter, type: 'dislike' }).lean();
+      const data = { like, dislike, current_user_reaction: null };
+      if (currentUserId !== null) {
+        const reaction = await Reaction.findOne({ ...filter, user_id: currentUserId }).lean();
+        if (reaction) {
+          data.current_user_reaction = reaction.type;
+        }
+      }
+      logger.info('Count reactions successfully');
+      return data;
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1004, 'Failed to count reactions in database', error);
+    }
+  }
+
+  async updateOne(filter, params) {
+    const { ctx, service, logger } = this;
+    const { model } = ctx;
+    const { Reaction } = model;
+
+    try {
+      const filteredParams = service.utils.filterData({
+        data: params,
+        model: Reaction,
+        include: ['type'],
+      });
+
+      const res = await Reaction.updateOne(filter, filteredParams).lean();
+      logger.info('Update reaction successfully');
+      return res.n > 0 ? { success: true } : {};
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1002, 'Failed to update reaction in database', error);
+    }
+  }
+
 }
 
 module.exports = ReactionService;
