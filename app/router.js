@@ -61,6 +61,9 @@ module.exports = (app) => {
   router.post('/answer/modifyAnswer', authentication(), authorization(['normal']), controller.answer.modifyAnswer);
   router.post('/answer/removeAnswer', authentication(), authorization(['normal']), controller.answer.removeAnswer);
 
+  // Reactions
+  router.post('/reaction/addReaction', authentication(), authorization(['normal']), controller.reaction.addReaction);
+
   // The following APIs are for admin user
   // Users
   router.post('/admin/user/addUser', controller.user.addUser);
@@ -104,4 +107,7 @@ module.exports = (app) => {
   router.post('/admin/answer/getAnswers', controller.answer.getAnswers);
   router.post('/admin/answer/modifyAnswer', controller.answer._modifyAnswer);
   router.post('/admin/answer/removeAnswer', controller.answer._removeAnswer);
+
+  // Reactions
+  router.post('/admin/reaction/addReaction', controller.reaction._addReaction);
 };
