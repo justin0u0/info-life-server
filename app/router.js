@@ -68,6 +68,7 @@ module.exports = (app) => {
 
   // Collections
   router.post('/collection/addCollection', authentication(), authorization(['normal']), controller.collection.addCollection);
+  router.post('/collection/countCollections', authentication(false), controller.collection.countCollections);
 
   // The following APIs are for admin user
   // Users

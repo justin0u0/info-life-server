@@ -73,6 +73,26 @@ class CollectionService extends Service {
       throw new ErrorRes(1001, 'Failed to find collections in database', error);
     }
   }
+
+  async count(filter, currentUserId = null) {
+    const { ctx, logger } = this;
+    const { model } = ctx;
+    const { Collection } = model;
+
+    try {
+      const total = await Collection.countDocuments(filter).lean();
+      const data = { total, current_user_is_collected: null };
+      if (currentUserId !== null) {
+        const collection = await Collection.findOne({ ...filter, user_id: currentUserId });
+        data.current_user_is_collected = !!collection;
+      }
+      logger.info('Count collections successfully');
+      return data;
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1004, 'Failed to count collections in database', error);
+    }
+  }
 }
 
 module.exports = CollectionService;
