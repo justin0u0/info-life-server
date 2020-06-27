@@ -46,6 +46,41 @@ class ReactionService extends Service {
       throw new ErrorRes(1000, 'Failed to create reaction to database', error);
     }
   }
+
+  async findOne(filter) {
+    const { ctx, service, logger } = this;
+    const { model } = ctx;
+    const { Reaction } = model;
+
+    try {
+      const reaction = await Reaction.findOne(filter).lean();
+      if (reaction) {
+        await service.user.tidyUpUser(reaction);
+      }
+      logger.info('Find reaction successfully');
+      return reaction;
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1001, 'Failed to find reaction in database', error);
+    }
+  }
+
+  async findAll({ filter, limit, skip, sort }) {
+    const { ctx, service, logger } = this;
+    const { model } = ctx;
+    const { Reaction } = model;
+
+    try {
+      const total = await Reaction.countDocuments(filter).lean();
+      const data = await Reaction.find(filter, null, { limit, skip, sort }).lean();
+      await service.user.tidyUpUsers(data);
+      logger.info('Find reactions successfully');
+      return { total, data };
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1001, 'Failed to find reactions in database', error);
+    }
+  }
 }
 
 module.exports = ReactionService;

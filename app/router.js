@@ -110,4 +110,6 @@ module.exports = (app) => {
 
   // Reactions
   router.post('/admin/reaction/addReaction', controller.reaction._addReaction);
+  router.post('/admin/reaction/getReaction', controller.reaction.getReaction);
+  router.post('/admin/reaction/getReactions', controller.reaction.getReactions);
 };
