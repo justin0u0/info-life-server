@@ -32,6 +32,41 @@ class CollectionService extends Service {
       throw new ErrorRes(1000, 'Failed to create collection to database', error);
     }
   }
+
+  async findOne(filter) {
+    const { ctx, service, logger } = this;
+    const { model } = ctx;
+    const { Collection } = model;
+
+    try {
+      const collection = await Collection.findOne(filter).lean();
+      if (collection) {
+        await service.user.tidyUpUser(collection);
+      }
+      logger.info('Find collection successfully');
+      return collection;
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1001, 'Failed to find collection in database', error);
+    }
+  }
+
+  async findAll({ filter, limit, skip, sort }) {
+    const { ctx, service, logger } = this;
+    const { model } = ctx;
+    const { Collection } = model;
+
+    try {
+      const total = await Collection.countDocuments(filter).lean();
+      const data = await Collection.find(filter, null, { limit, skip, sort }).lean();
+      await service.user.tidyUpUsers(data);
+      logger.info('Find collecitons successfully');
+      return { total, data };
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1001, 'Failed to find collections in database', error);
+    }
+  }
 }
 
 module.exports = CollectionService;
