@@ -51,6 +51,7 @@ module.exports = (app) => {
   router.post('/question/addQuestion', authentication(), authorization(['normal']), controller.question.addQuestion);
   router.post('/question/getQuestion', controller.question.getQuestion);
   router.post('/question/getQuestions', controller.question.getQuestions);
+  router.post('/question/getQuestionsByCurrentUser', authentication(), authorization(['normal']), controller.question.getQuestionsByCurrentUser);
   router.post('/question/modifyQuestion', authentication(), authorization(['normal']), controller.question.modifyQuestion);
   router.post('/question/removeQuestion', authentication(), authorization(['normal']), controller.question.removeQuestion);
 
