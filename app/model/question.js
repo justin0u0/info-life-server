@@ -49,6 +49,11 @@ module.exports = (app) => {
     best_answer_id: {
       type: mongoose.Types.ObjectId,
     },
+    view_count: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
     created_at: {
       type: Number,
       required: true,

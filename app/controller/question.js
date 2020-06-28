@@ -260,7 +260,7 @@ class QuestionController extends Controller {
     try {
       ctx.validate(rule, body);
       const { _id, ...params } = body;
-      const res = await service.question.updateOne({ _id }, params);
+      const res = await service.question.updateOne({ _id }, params, true);
       response.body = res;
     } catch (error) {
       response.status = error.status;
@@ -308,6 +308,29 @@ class QuestionController extends Controller {
       ctx.validate(rule, body);
       const { _id } = body;
       const res = await service.question.deleteOne({ _id });
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
+  async increaseViewCount() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+
+    // Validate parameters
+    const rule = {
+      _id: {
+        type: 'object_id',
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { _id } = body;
+      const res = await service.question.increaseViewCount({ _id });
       response.body = res;
     } catch (error) {
       response.status = error.status;
