@@ -2,8 +2,6 @@
 
 'use strict';
 
-require('dotenv').config({ path: '.env.local' });
-
 /**
  * @param {Egg.EggAppInfo} appInfo app info
  */
