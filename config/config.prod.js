@@ -13,6 +13,13 @@ module.exports = (appInfo) => {
    * @type {Egg.EggAppConfig}
    **/
   const config = exports = {};
+  const {
+    DATABASE_PREFIX: dbPrefix,
+    DATABASE_HOST: dbHost,
+    DATABASE_USERNAME: dbUsername,
+    DATABASE_PASSWORD: dbPassword,
+    DATABASE_NAME: dbName,
+  } = process.env;
 
   // use for cookie sign key, should change to your own and keep security
   config.keys = appInfo.name + '_1589185892597_8470';
@@ -25,6 +32,24 @@ module.exports = (appInfo) => {
     csrf: {
       enable: false,
     },
+  };
+
+  // mongoose
+  config.mongoose = {
+    client: {
+      url: `${dbPrefix}://${dbUsername}:${dbPassword}@${dbHost}/${dbName}?authSource=admin&w=1`,
+      options: {
+        keepAlive: true,
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+      },
+    },
+  };
+
+  // jwt
+  config.jwt = {
+    secret: 'JwVh1pcdVIqhso6PZulQeWwn4NbwGMlo',
   };
 
   // cors
