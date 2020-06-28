@@ -7,8 +7,14 @@
     "declarations": true
   },
   "dependencies": {
+    "dotenv": "^8.2.0",
     "egg": "^2.15.1",
-    "egg-scripts": "^2.11.0"
+    "egg-bcrypt": "^1.1.0",
+    "egg-cors": "^2.2.3",
+    "egg-jwt": "^3.1.7",
+    "egg-mongoose": "^3.2.0",
+    "egg-scripts": "^2.11.0",
+    "egg-validate": "^2.0.2"
   },
   "devDependencies": {
     "autod": "^3.0.1",
@@ -25,14 +31,15 @@
   "scripts": {
     "start": "egg-scripts start --daemon --title=egg-server-info-life-server",
     "stop": "egg-scripts stop --title=egg-server-info-life-server",
-    "dev": "egg-bin dev",
+    "dev": "docker-compose -f ./docker-compose.dev.yml up -d && egg-bin dev",
     "debug": "egg-bin debug",
     "test": "npm run lint -- --fix && npm run test-local",
     "test-local": "egg-bin test",
     "cov": "egg-bin cov",
     "lint": "eslint .",
     "ci": "npm run lint && npm run cov",
-    "autod": "autod"
+    "autod": "autod",
+    "dc:up": "docker-compose -f ./docker-compose.dev.yml up -d"
   },
   "ci": {
     "version": "10"
