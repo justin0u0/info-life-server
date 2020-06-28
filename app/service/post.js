@@ -176,8 +176,9 @@ class PostService extends Service {
     const post = await Post.findOne({ _id: post_id }, {
       user_id: 1,
       title: 1,
-      subtitie: 1,
+      subtitle: 1,
       created_at: 1,
+      view_count: 1,
       cover: 1,
     }).lean();
     // Tidy up user
@@ -205,8 +206,9 @@ class PostService extends Service {
     const posts = await Post.find({ _id: postArr }, {
       user_id: 1,
       title: 1,
-      subtitie: 1,
+      subtitle: 1,
       created_at: 1,
+      view_count: 1,
       cover: 1,
     }).lean();
     await service.user.tidyUpUsers(posts);
