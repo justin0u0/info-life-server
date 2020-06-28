@@ -133,6 +133,44 @@ class QuestionController extends Controller {
     }
   }
 
+  async getQuestionsByCurrentUser() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+    const { _id: user_id } = ctx.state.user;
+
+    // Validate parameters
+    const rule = {
+      filter: {
+        type: 'object',
+        required: false,
+      },
+      limit: {
+        type: 'integer',
+        required: false,
+      },
+      skip: {
+        type: 'integer',
+        required: false,
+      },
+      sort: {
+        type: 'object',
+        required: false,
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { filter = {}, limit = 10, skip = 0, sort = {} } = body;
+      filter.user_id = user_id;
+      const res = await service.question.findAll({ filter, limit, skip, sort });
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
   async modifyQuestion() {
     const { ctx, service } = this;
     const { request, response } = ctx;
@@ -222,7 +260,7 @@ class QuestionController extends Controller {
     try {
       ctx.validate(rule, body);
       const { _id, ...params } = body;
-      const res = await service.question.updateOne({ _id }, params);
+      const res = await service.question.updateOne({ _id }, params, true);
       response.body = res;
     } catch (error) {
       response.status = error.status;
@@ -270,6 +308,29 @@ class QuestionController extends Controller {
       ctx.validate(rule, body);
       const { _id } = body;
       const res = await service.question.deleteOne({ _id });
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
+  async increaseViewCount() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+
+    // Validate parameters
+    const rule = {
+      _id: {
+        type: 'object_id',
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { _id } = body;
+      const res = await service.question.increaseViewCount({ _id });
       response.body = res;
     } catch (error) {
       response.status = error.status;

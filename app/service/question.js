@@ -25,6 +25,7 @@ class QuestionService extends Service {
       });
       filteredParams.is_solved = false;
       filteredParams.created_at = Date.now();
+      filteredParams.view_count = 0;
 
       const res = await Question.create(filteredParams);
       logger.info('Create question successfully');
@@ -72,7 +73,7 @@ class QuestionService extends Service {
     }
   }
 
-  async updateOne(filter, params) {
+  async updateOne(filter, params, isAdmin = false) {
     const { ctx, service, logger } = this;
     const { model } = ctx;
     const { Question, Tag, Answer } = model;
@@ -91,10 +92,12 @@ class QuestionService extends Service {
         if (!answer) throw 'Failed to find answer in database';
       }
 
+      const exclude = ['_id', 'user_id', 'created_at', 'updated_at'];
+      if (!isAdmin) exclude.push('view_count');
       const filteredParams = service.utils.filterData({
         data: params,
         model: Question,
-        exclude: ['_id', 'user_id', 'created_at', 'updated_at'],
+        exclude,
       });
       filteredParams.updated_at = Date.now();
 
@@ -120,6 +123,21 @@ class QuestionService extends Service {
     } catch (error) {
       logger.error(error);
       throw new ErrorRes(1003, 'Failed to delete question to database');
+    }
+  }
+
+  async increaseViewCount(filter) {
+    const { ctx, logger } = this;
+    const { model } = ctx;
+    const { Question } = model;
+
+    try {
+      const res = await Question.updateOne(filter, { $inc: { view_count: 1 } }).lean();
+      logger.info('Update question view_count successfully');
+      return res.n > 0 ? { success: true } : {};
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1002, 'Failed to update question view_count to database', error);
     }
   }
 }

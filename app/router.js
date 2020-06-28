@@ -51,8 +51,10 @@ module.exports = (app) => {
   router.post('/question/addQuestion', authentication(), authorization(['normal']), controller.question.addQuestion);
   router.post('/question/getQuestion', controller.question.getQuestion);
   router.post('/question/getQuestions', controller.question.getQuestions);
+  router.post('/question/getQuestionsByCurrentUser', authentication(), authorization(['normal']), controller.question.getQuestionsByCurrentUser);
   router.post('/question/modifyQuestion', authentication(), authorization(['normal']), controller.question.modifyQuestion);
   router.post('/question/removeQuestion', authentication(), authorization(['normal']), controller.question.removeQuestion);
+  router.post('/question/increaseViewCount', controller.question.increaseViewCount);
 
   // Answers
   router.post('/answer/addAnswer', authentication(), authorization(['normal']), controller.answer.addAnswer);
@@ -71,6 +73,9 @@ module.exports = (app) => {
   router.post('/collection/getCollections', authentication(), authorization(['normal']), controller.collection.getCollections);
   router.post('/collection/countCollections', authentication(false), controller.collection.countCollections);
   router.post('/collection/removeCollection', authentication(), authorization(['normal']), controller.collection.removeCollection);
+
+  // Feedbacks
+  router.post('/feedback/addFeedback', controller.feedback.addFeedback);
 
   // The following APIs are for admin user
   // Users
@@ -128,4 +133,11 @@ module.exports = (app) => {
   router.post('/admin/collection/getCollection', controller.collection.getCollection);
   router.post('/admin/collection/getCollections', controller.collection._getCollections);
   router.post('/admin/collection/removeCollection', controller.collection._removeCollection);
+
+  // Feedbacks
+  router.post('/admin/feedback/addFeedback', controller.feedback.addFeedback);
+  router.post('/admin/feedback/getFeedback', controller.feedback.getFeecback);
+  router.post('/admin/feedback/getFeedbacks', controller.feedback.getFeedbacks);
+  router.post('/admin/feedback/modifyFeedback', controller.feedback.modifyFeedback);
+  router.post('/admin/feedback/removeFeedback', controller.feedback.removeFeedback);
 };
