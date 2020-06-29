@@ -86,6 +86,9 @@ module.exports = (app) => {
     profiles: {
       type: profilesSchema,
     },
+    description: {
+      type: String,
+    },
   }, {
     strict: 'throw',
   });

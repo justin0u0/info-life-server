@@ -53,6 +53,28 @@ class UserController extends Controller {
     }
   }
 
+  async getUserProfile() {
+    const { ctx, service } = this;
+    const { request, response } = ctx;
+    const { body } = request;
+
+    const rule = {
+      _id: {
+        type: 'object_id',
+      },
+    };
+
+    try {
+      ctx.validate(rule, body);
+      const { _id } = body;
+      const res = await service.user.getPublicProfile({ _id });
+      response.body = res;
+    } catch (error) {
+      response.status = error.status;
+      response.body = { code: error.code, error: error.message, data: error.errors };
+    }
+  }
+
   async _getUser() {
     const { ctx, service } = this;
     const { request, response } = ctx;
@@ -135,6 +157,11 @@ class UserController extends Controller {
         type: 'object',
         required: false,
       },
+      description: {
+        type: 'string',
+        max: '500',
+        required: false,
+      },
     };
 
     try {
@@ -171,6 +198,11 @@ class UserController extends Controller {
       },
       profiles: {
         type: 'object',
+        required: false,
+      },
+      description: {
+        type: 'string',
+        max: '500',
         required: false,
       },
     };
