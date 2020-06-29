@@ -42,8 +42,10 @@ class AnswerService extends Service {
     try {
       const answer = await Answer.findOne(filter).lean();
       if (answer) {
-        await service.user.tidyUpUser(answer);
-        // TODO: tidy up sub-answer
+        await Promise.all([
+          service.user.tidyUpUser(answer),
+          service.question.tidyUpQuestion(answer),
+        ]);
       }
       logger.info('Find answer successfully');
       return answer;
@@ -61,7 +63,10 @@ class AnswerService extends Service {
     try {
       const total = await Answer.countDocuments(filter).lean();
       const data = await Answer.find(filter, null, { limit, skip, sort }).lean();
-      await service.user.tidyUpUsers(data);
+      await Promise.all([
+        service.user.tidyUpUsers(data),
+        service.question.tidyUpQuestions(data),
+      ]);
       logger.info('Find answers successfully');
       return { total, data };
     } catch (error) {
