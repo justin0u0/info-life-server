@@ -157,6 +157,11 @@ class UserController extends Controller {
         type: 'object',
         required: false,
       },
+      description: {
+        type: 'string',
+        max: '500',
+        required: false,
+      },
     };
 
     try {
@@ -193,6 +198,11 @@ class UserController extends Controller {
       },
       profiles: {
         type: 'object',
+        required: false,
+      },
+      description: {
+        type: 'string',
+        max: '500',
         required: false,
       },
     };
