@@ -164,7 +164,7 @@ class PostService extends Service {
   /**
    * Assign post to datum by `datum.post_id`
    * @param {Object} datum datum to format
-   * @param {Object} datum.post user._id
+   * @param {Object} datum.post_id post._id
    */
   async tidyUpPost(datum) {
     const { ctx, service } = this;
@@ -211,7 +211,10 @@ class PostService extends Service {
       view_count: 1,
       cover: 1,
     }).lean();
+
+    // Tidy up users
     await service.user.tidyUpUsers(posts);
+
     const postObj = {};
     for (const post of posts) {
       const { _id } = post;
