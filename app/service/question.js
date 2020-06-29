@@ -140,6 +140,76 @@ class QuestionService extends Service {
       throw new ErrorRes(1002, 'Failed to update question view_count to database', error);
     }
   }
+
+  // Utilities
+
+  /**
+   * Assign question to datum by `datum.question_id`
+   * @param {Object} datum datum to format
+   * @param {Object} datum.question_id question._id
+   */
+  async tidyUpQuestion(datum) {
+    const { ctx, service } = this;
+    const { model } = ctx;
+    const { Question } = model;
+
+    const { question_id = null } = datum;
+    if (!question_id) throw 'FAiled to tidy up question, invalid parameter';
+    const question = await Question.findOne({ _id: question_id }, {
+      user_id: 1,
+      tag_id: 1,
+      title: 1,
+      created_at: 1,
+    }).lean();
+
+    await Promise.all([
+      // Tidy up user
+      service.user.tidyUpUser(question),
+      // Tidy up tag
+      service.tag.tidyUpTag(question),
+    ]);
+    datum.question = question;
+    return datum;
+  }
+
+  /**
+   * Assign question to each datum in data by `datum.question_id`
+   * @param {Object[]} data data to format
+   * @param {Object} data[].question_id question._id
+   */
+  async tidyUpQuestions(data) {
+    const { ctx, service } = this;
+    const { model } = ctx;
+    const { Question } = model;
+
+    const questionArr = [];
+    for (const datum of data) {
+      if (!datum.question_id) throw 'Failed to tidy up questions, invalid parameters';
+      questionArr.push(datum.question_id);
+    }
+
+    const questions = await Question.find({ _id: questionArr }, {
+      user_id: 1,
+      tag_id: 1,
+      title: 1,
+      created_at: 1,
+    }).lean();
+
+    await Promise.all([
+      // Tidy up users
+      service.user.tidyUpUsers(questions),
+      // Tidy up tags
+      service.tag.tidyUpTags(questions),
+    ]);
+
+    const questionObj = {};
+    for (const question of questions) {
+      const { _id } = question;
+      questionObj[_id] = question;
+    }
+    for (const datum of data) datum.question = questionObj[datum.question_id];
+    return data;
+  }
 }
 
 module.exports = QuestionService;

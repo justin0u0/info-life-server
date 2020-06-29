@@ -22,6 +22,7 @@ module.exports = (app) => {
   router.post('/user/getUser', authentication(), authorization(['normal']), controller.user.getUser);
   router.post('/user/modifyUser', authentication(), authorization(['normal']), controller.user.modifyUser);
   router.post('/user/removeUser', authentication(), authorization(['normal']), controller.user.removeUser);
+  router.post('/user/getUserProfile', controller.user.getUserProfile);
 
   // Sessions
   router.post('/session/login', controller.session.login);

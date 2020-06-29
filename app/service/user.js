@@ -86,6 +86,25 @@ class UserService extends Service {
     }
   }
 
+  async getPublicProfile(filter) {
+    const { ctx, logger } = this;
+    const { model } = ctx;
+    const { User } = model;
+
+    try {
+      const res = await User.findOne(filter, { username: 1, name: 1, avatar: 1, description: 1, profiles: 1 }).lean();
+      const { profiles = {} } = res;
+      for (const profile in profiles) {
+        if (!profiles[profile].show) delete profiles[profile];
+      }
+      logger.info('Get user public profile successfully');
+      return res;
+    } catch (error) {
+      logger.error(error);
+      throw new ErrorRes(1001, 'Failed to find user in database');
+    }
+  }
+
   // Utilities
 
   /**
