@@ -2,6 +2,8 @@
 
 2020 Software Studio Final Project InfoLife API Server
 
+**THIS PROJECT IS COPIED FROM GITLAB, AND IS FOR VIEWED ONLY, DO NOT DO ANY CHANGE ON THIS PROJECT.**
+
 ## QuickStart
 
 <!-- add docs here for user -->
